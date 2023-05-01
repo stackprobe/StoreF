@@ -35,51 +35,45 @@ namespace Charlotte.Tests
 
 					PictureName = Path.GetFileNameWithoutExtension(file);
 					Picture = Canvas.LoadFromFile(file);
+					Picture.FilterAllDot((dot, x, y) => new I4Color(dot.R, dot.G, dot.B, 255)); // 不透明にする。
 
 					ProcMain.WriteLog("W " + Picture.W);
 					ProcMain.WriteLog("H " + Picture.H);
 
-					if (Picture.W < MONITOR_SIZE.W || Picture.H < MONITOR_SIZE.H)
+					D4Rect[] rects = Common.EnlargeFull(
+						new I2Size(Picture.W, Picture.H).ToD2Size(),
+						new I4Rect(0, 0, MONITOR_SIZE.W, MONITOR_SIZE.H).ToD4Rect()
+						);
+
+					Interior = rects[0].ToI4Rect();
+					Exterior = rects[1].ToI4Rect();
+
+					ProcMain.WriteLog("E.L " + Exterior.L);
+					ProcMain.WriteLog("E.T " + Exterior.T);
+
+					if (Math.Abs(Exterior.T) < 5 && Math.Abs(Exterior.L) < 5) // ? アスペクト比が(同じ || ほとんど同じ)
 					{
-						ProcMain.WriteLog("モニタより小さい画像なのでスキップします。");
+						OutputSimple();
 					}
 					else
 					{
-						D4Rect[] rects = Common.EnlargeFull(
-							new I2Size(Picture.W, Picture.H).ToD2Size(),
-							new I4Rect(0, 0, MONITOR_SIZE.W, MONITOR_SIZE.H).ToD4Rect()
-							);
+						Picture_I = Picture.Expand(Interior.W, Interior.H);
+						Picture_E = Picture.Expand(Exterior.W, Exterior.H);
 
-						Interior = rects[0].ToI4Rect();
-						Exterior = rects[1].ToI4Rect();
+						OutputTopOrLeft();
+						OutputBottomOrRight();
+						OutputCenter();
 
-						ProcMain.WriteLog("E.L " + Exterior.L);
-						ProcMain.WriteLog("E.T " + Exterior.T);
-
-						if (Math.Abs(Exterior.T) < 5 && Math.Abs(Exterior.L) < 5) // ? アスペクト比が(同じ || ほとんど同じ)
-						{
-							OutputSimple();
-						}
-						else
-						{
-							Picture_I = Picture.Expand(Interior.W, Interior.H);
-							Picture_E = Picture.Expand(Exterior.W, Exterior.H);
-
-							OutputTopOrLeft();
-							OutputBottomOrRight();
-							OutputCenter();
-
-							Picture_I = null;
-							Picture_E = null;
-						}
-
-						PictureName = null;
-						Picture = null;
-						Interior = default(I4Rect);
-						Exterior = default(I4Rect);
-
-						ProcMain.WriteLog("done");
+						Picture_I = null;
+						Picture_E = null;
 					}
+
+					PictureName = null;
+					Picture = null;
+					Interior = default(I4Rect);
+					Exterior = default(I4Rect);
+
+					ProcMain.WriteLog("done");
 				}
 			}
 			ProcMain.WriteLog("done!");
