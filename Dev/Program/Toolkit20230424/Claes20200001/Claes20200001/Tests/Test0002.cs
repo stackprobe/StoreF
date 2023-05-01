@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Charlotte.Commons;
-using Charlotte.Utilities;
 using Charlotte.Drawings;
+using Charlotte.Utilities;
 
 namespace Charlotte.Tests
 {
@@ -92,30 +92,25 @@ namespace Charlotte.Tests
 		private void OutputTopOrLeft()
 		{
 			string suffix = Exterior.L == 0 ? "T" : "L";
-
-			Picture_E
-				.GetSubImage(new I4Rect(0, 0, MONITOR_SIZE.W, MONITOR_SIZE.H))
-				.Save(Path.Combine(SCommon.GetOutputDir(), PictureName + suffix + ".png"));
+			Canvas canvas = Picture_E;
+			canvas = canvas.GetSubImage(new I4Rect(0, 0, MONITOR_SIZE.W, MONITOR_SIZE.H));
+			canvas.Save(Path.Combine(SCommon.GetOutputDir(), PictureName + suffix + ".png"));
 		}
 
 		private void OutputBottomOrRight()
 		{
 			string suffix = Exterior.L == 0 ? "B" : "R";
-
-			Picture_E
-				.GetSubImage(new I4Rect(Exterior.W - MONITOR_SIZE.W, Exterior.H - MONITOR_SIZE.H, MONITOR_SIZE.W, MONITOR_SIZE.H))
-				.Save(Path.Combine(SCommon.GetOutputDir(), PictureName + suffix + ".png"));
+			Canvas canvas = Picture_E;
+			canvas = canvas.GetSubImage(new I4Rect(Exterior.W - MONITOR_SIZE.W, Exterior.H - MONITOR_SIZE.H, MONITOR_SIZE.W, MONITOR_SIZE.H));
+			canvas.Save(Path.Combine(SCommon.GetOutputDir(), PictureName + suffix + ".png"));
 		}
 
 		private void OutputCenter()
 		{
 			string suffix = "C";
-
-			Canvas canvas = Picture_E
-				.GetSubImage(new I4Rect((Exterior.W - MONITOR_SIZE.W) / 2, (Exterior.H - MONITOR_SIZE.H) / 2, MONITOR_SIZE.W, MONITOR_SIZE.H));
-
-			canvas
-				.Save(Path.Combine(SCommon.GetOutputDir(), PictureName + suffix + ".png"));
+			Canvas canvas = Picture_E;
+			canvas = canvas.GetSubImage(new I4Rect((Exterior.W - MONITOR_SIZE.W) / 2, (Exterior.H - MONITOR_SIZE.H) / 2, MONITOR_SIZE.W, MONITOR_SIZE.H));
+			canvas.Save(Path.Combine(SCommon.GetOutputDir(), PictureName + suffix + ".png"));
 
 			// ----
 
