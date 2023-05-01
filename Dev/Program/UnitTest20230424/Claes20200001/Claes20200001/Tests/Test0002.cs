@@ -8,6 +8,9 @@ using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
+	/// <summary>
+	/// SCommon.Base64 テスト
+	/// </summary>
 	public class Test0002
 	{
 		public void Test01()

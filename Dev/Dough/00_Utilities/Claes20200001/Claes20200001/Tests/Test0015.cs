@@ -8,7 +8,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// ArraySpliceSequencer.cs テスト
+	/// ArraySpliceSequencer テスト
 	/// </summary>
 	public class Test0015
 	{

@@ -8,7 +8,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// CtrCipher.cs テスト
+	/// CtrCipher テスト
 	/// </summary>
 	public class Test0013
 	{

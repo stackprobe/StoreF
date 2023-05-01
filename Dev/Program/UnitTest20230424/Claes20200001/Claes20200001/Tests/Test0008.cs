@@ -6,6 +6,9 @@ using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
+	/// <summary>
+	/// SCommon.GetIndex テスト
+	/// </summary>
 	public class Test0008
 	{
 		public void Test01()

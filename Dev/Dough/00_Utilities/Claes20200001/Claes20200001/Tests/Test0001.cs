@@ -9,7 +9,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// AESCipher.cs テスト
+	/// AESCipher テスト
 	/// </summary>
 	public class Test0001
 	{

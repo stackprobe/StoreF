@@ -8,7 +8,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// BitList.cs テスト
+	/// BitList テスト
 	/// </summary>
 	public class Test0007
 	{

@@ -7,6 +7,9 @@ using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
+	/// <summary>
+	/// SCommon.Hex テスト
+	/// </summary>
 	public class Test0005
 	{
 		public void Test01()

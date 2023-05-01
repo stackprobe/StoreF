@@ -8,7 +8,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// MillerRabinTester.cs テスト
+	/// MillerRabinTester テスト
 	/// </summary>
 	public class Test0010
 	{

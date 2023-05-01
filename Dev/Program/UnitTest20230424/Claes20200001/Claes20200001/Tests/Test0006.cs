@@ -6,6 +6,9 @@ using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
+	/// <summary>
+	/// SCommon.TimeStampToSec テスト
+	/// </summary>
 	public class Test0006
 	{
 		public void Test01()

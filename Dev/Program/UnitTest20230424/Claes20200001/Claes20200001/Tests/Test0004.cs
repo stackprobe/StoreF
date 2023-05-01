@@ -7,6 +7,9 @@ using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
+	/// <summary>
+	/// SCommon.Serializer テスト
+	/// </summary>
 	public class Test0004
 	{
 		public void Test01()

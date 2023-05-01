@@ -9,7 +9,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// JsonNode.cs テスト
+	/// JsonNode テスト
 	/// </summary>
 	public class Test0011
 	{

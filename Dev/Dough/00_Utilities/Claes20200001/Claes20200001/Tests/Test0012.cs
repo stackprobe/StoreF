@@ -9,7 +9,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// XMLNode.cs テスト
+	/// XMLNode テスト
 	/// </summary>
 	public class Test0012
 	{

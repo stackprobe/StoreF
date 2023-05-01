@@ -8,7 +8,7 @@ using Charlotte.WebServices;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// HTTPServer.cs テスト
+	/// HTTPServer テスト
 	/// </summary>
 	public class Test0005
 	{

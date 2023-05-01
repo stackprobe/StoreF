@@ -6,6 +6,9 @@ using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
+	/// <summary>
+	/// RandomUnit テスト
+	/// </summary>
 	public class Test0003
 	{
 		public void Test01()

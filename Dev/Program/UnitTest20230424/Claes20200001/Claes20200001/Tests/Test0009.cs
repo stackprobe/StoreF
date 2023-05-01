@@ -6,6 +6,9 @@ using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
+	/// <summary>
+	/// SCommon.GetRange テスト
+	/// </summary>
 	public class Test0009
 	{
 		public void Test01()

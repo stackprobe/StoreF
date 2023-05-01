@@ -9,7 +9,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// HTTPClient.cs テスト
+	/// HTTPClient テスト
 	/// </summary>
 	public class Test0004
 	{

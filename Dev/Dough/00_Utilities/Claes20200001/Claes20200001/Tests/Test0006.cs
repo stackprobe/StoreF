@@ -9,7 +9,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// JapaneseDate.cs テスト
+	/// JapaneseDate テスト
 	/// </summary>
 	public class Test0006
 	{

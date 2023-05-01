@@ -8,7 +8,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// Canvas.cs テスト
+	/// Canvas テスト
 	/// </summary>
 	public class Test0014
 	{

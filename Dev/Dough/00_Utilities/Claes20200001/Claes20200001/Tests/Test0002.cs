@@ -8,7 +8,7 @@ using Charlotte.Utilities;
 namespace Charlotte.Tests
 {
 	/// <summary>
-	/// RingCipher.cs テスト
+	/// RingCipher テスト
 	/// </summary>
 	public class Test0002
 	{
