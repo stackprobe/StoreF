@@ -39,37 +39,47 @@ namespace Charlotte.Tests
 					ProcMain.WriteLog("W " + Picture.W);
 					ProcMain.WriteLog("H " + Picture.H);
 
-					D4Rect[] rects = Common.EnlargeFull(
-						new I2Size(Picture.W, Picture.H).ToD2Size(),
-						new I4Rect(0, 0, MONITOR_SIZE.W, MONITOR_SIZE.H).ToD4Rect()
-						);
-
-					Interior = rects[0].ToI4Rect();
-					Exterior = rects[1].ToI4Rect();
-
-					if (Exterior.T == 0 && Exterior.L == 0) // ? アスペクト比が同じ。
+					if (Picture.W < MONITOR_SIZE.W || Picture.H < MONITOR_SIZE.H)
 					{
-						OutputSimple();
+						ProcMain.WriteLog("モニタより小さい画像なのでスキップします。");
 					}
 					else
 					{
-						Picture_I = Picture.Expand(Interior.W, Interior.H);
-						Picture_E = Picture.Expand(Exterior.W, Exterior.H);
+						D4Rect[] rects = Common.EnlargeFull(
+							new I2Size(Picture.W, Picture.H).ToD2Size(),
+							new I4Rect(0, 0, MONITOR_SIZE.W, MONITOR_SIZE.H).ToD4Rect()
+							);
 
-						OutputTopOrLeft();
-						OutputBottomOrRight();
-						OutputCenter();
+						Interior = rects[0].ToI4Rect();
+						Exterior = rects[1].ToI4Rect();
 
-						Picture_I = null;
-						Picture_E = null;
+						ProcMain.WriteLog("E.L " + Exterior.L);
+						ProcMain.WriteLog("E.T " + Exterior.T);
+
+						if (Math.Abs(Exterior.T) < 5 && Math.Abs(Exterior.L) < 5) // ? アスペクト比が(同じ || ほとんど同じ)
+						{
+							OutputSimple();
+						}
+						else
+						{
+							Picture_I = Picture.Expand(Interior.W, Interior.H);
+							Picture_E = Picture.Expand(Exterior.W, Exterior.H);
+
+							OutputTopOrLeft();
+							OutputBottomOrRight();
+							OutputCenter();
+
+							Picture_I = null;
+							Picture_E = null;
+						}
+
+						PictureName = null;
+						Picture = null;
+						Interior = default(I4Rect);
+						Exterior = default(I4Rect);
+
+						ProcMain.WriteLog("done");
 					}
-
-					PictureName = null;
-					Picture = null;
-					Interior = default(I4Rect);
-					Exterior = default(I4Rect);
-
-					ProcMain.WriteLog("done");
 				}
 			}
 			ProcMain.WriteLog("done!");
