@@ -66,6 +66,7 @@
     <Compile Include="Drawings\I4Rect.cs" />
     <Compile Include="Drawings\P4Poly.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Tests\Test0002.cs" />
     <Compile Include="Utilities\Canvas.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
