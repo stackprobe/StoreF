@@ -110,18 +110,6 @@ namespace Charlotte.Tests
 					throw null;
 
 				// ----
-				// 余計な文字をランダムに挿入
-
-				str = SCommon.Base32.I.Encode(data);
-				str = RandomInsert(str, 0.3, new string[] { "\r\n", " ", "い", "ろは", "にほへ" });
-				retData = SCommon.Base32.I.Decode(str);
-
-				Console.WriteLine(str + " --> " + SCommon.Hex.I.ToString(retData));
-
-				if (SCommon.Comp(data, retData) != 0) // ? 不一致
-					throw null;
-
-				// ----
 				// パディング無し
 
 				str = SCommon.Base32.I.EncodeNoPadding(data);
@@ -157,10 +145,22 @@ namespace Charlotte.Tests
 					throw null;
 
 				// ----
-				// パディング無し + 余計な文字をランダムに挿入
+				// 余計な文字をランダムに挿入
+
+				str = SCommon.Base32.I.Encode(data);
+				str = RandomInsert(str, 0.3, new string[] { "\r\n", "\t", " ", "い", "ろは", "にほへ" });
+				retData = SCommon.Base32.I.Decode(str);
+
+				Console.WriteLine(str + " --> " + SCommon.Hex.I.ToString(retData));
+
+				if (SCommon.Comp(data, retData) != 0) // ? 不一致
+					throw null;
+
+				// ----
+				// 余計な文字をランダムに挿入 + パディング無し
 
 				str = SCommon.Base32.I.EncodeNoPadding(data);
-				str = RandomInsert(str, 0.3, new string[] { "\r\n", " ", "い", "ろは", "にほへ" });
+				str = RandomInsert(str, 0.3, new string[] { "\r\n", "\t", " ", "い", "ろは", "にほへ" });
 				retData = SCommon.Base32.I.Decode(str);
 
 				Console.WriteLine(str + " --> " + SCommon.Hex.I.ToString(retData));
@@ -181,7 +181,7 @@ namespace Charlotte.Tests
 
 			for (int index = 0; ; index++)
 			{
-				if (SCommon.CRandom.GetReal1() < rate)
+				while (SCommon.CRandom.GetRate() < rate)
 					buff.Append(SCommon.CRandom.ChooseOne(ptns));
 
 				if (str.Length <= index)
