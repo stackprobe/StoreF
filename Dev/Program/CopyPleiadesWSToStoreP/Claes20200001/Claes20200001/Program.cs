@@ -34,15 +34,17 @@ namespace Charlotte
 
 		private void Main3()
 		{
+			// テスト系 -- リリース版では使用しない。
+#if DEBUG
 			// -- choose one --
 
-			Main4(new ArgsReader(new string[] { "D" }));
+			Main4(new ArgsReader(new string[] { "E" }));
 			//new Test0001().Test01();
 			//new Test0002().Test01();
 			//new Test0003().Test01();
 
 			// --
-
+#endif
 			SCommon.Pause();
 		}
 
