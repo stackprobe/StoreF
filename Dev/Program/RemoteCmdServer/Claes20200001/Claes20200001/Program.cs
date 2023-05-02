@@ -40,8 +40,8 @@ namespace Charlotte
 #if DEBUG
 			// -- choose one --
 
-			Main4(new ArgsReader(new string[] { "80", @"..\..\..\..\TestData\Batch", @"C:\temp" }));
-			//Main4(new ArgsReader(new string[] { "/P", "80", @"..\..\..\..\TestData\Batch", @"C:\temp" }));
+			//Main4(new ArgsReader(new string[] { "80", @"..\..\..\..\TestData\Batch", @"C:\temp" }));
+			Main4(new ArgsReader(new string[] { "/P", "80", @"..\..\..\..\TestData\Batch", @"C:\temp" }));
 			//new Test0001().Test01();
 			//new Test0002().Test01();
 			//new Test0003().Test01();
@@ -151,6 +151,8 @@ namespace Charlotte
 			}
 			catch (Exception ex)
 			{
+				ProcMain.WriteLog("通信失敗：" + ex.Message);
+
 				channel.ResStatus = 404;
 				channel.ResBody = new byte[][] { Encoding.UTF8.GetBytes(ex.ToString()) };
 				channel.ResHeaderPairs.Add(new string[] { "Content-Type", "text/plain; charset=UTF-8" });
@@ -162,7 +164,7 @@ namespace Charlotte
 			ProcMain.WriteLog("Client: " + channel.Channel.Handler.RemoteEndPoint);
 
 			if (this.PostRequestOnlyMode && channel.Method != "POST")
-				throw new Exception("POST-リクエスト以外は受け付けません。");
+				throw new Exception("POSTリクエスト以外は受け付けません。");
 
 			string urlPath = channel.PathQuery;
 
