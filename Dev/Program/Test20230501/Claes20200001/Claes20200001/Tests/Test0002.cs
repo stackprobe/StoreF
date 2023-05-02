@@ -46,5 +46,35 @@ namespace Charlotte.Tests
 			//Console.WriteLine(u4);
 			//Console.WriteLine(u5);
 		}
+
+		public void Test02()
+		{
+			Test02_a(45);
+			Test02_a(46);
+			Test02_a(47);
+			Test02_a(48); // <--- RandomUnit.GetRate
+			Test02_a(49);
+			Test02_a(50);
+			Test02_a(51);
+			Test02_a(52); // ここが限界っぽい。== doubleの仮数部のビット数
+			Test02_a(53);
+			Test02_a(54);
+			Test02_a(55);
+		}
+
+		private void Test02_a(int bits)
+		{
+			Console.WriteLine("bits: " + bits);
+
+			for (int n = 0; n <= 5; n++)
+			{
+				double value = 1.0;
+
+				value += (double)n / ((1UL << bits) - 1);
+
+				//Console.WriteLine(value.ToString("F20"));
+				Console.WriteLine(value.ToString("R"));
+			}
+		}
 	}
 }
