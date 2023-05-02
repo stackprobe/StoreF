@@ -603,5 +603,79 @@ namespace Charlotte.Utilities
 			ProcMain.WriteLog("Canvas-Rotate-90-ED");
 			return dest;
 		}
+
+		/// <summary>
+		/// ぼかす
+		/// 注意：アルファ値は捨てられる。
+		/// </summary>
+		/// <param name="level">ぼかし量(1～)</param>
+		public void Blur(int level)
+		{
+			ProcMain.WriteLog("Canvas-Blur-ST");
+
+			double[, , ,] map = new double[2, this.W, this.H, 3];
+			int r = 0;
+
+			for (int x = 0; x < this.W; x++)
+			{
+				for (int y = 0; y < this.H; y++)
+				{
+					map[0, x, y, 0] = this[x, y].R / 255.0;
+					map[0, x, y, 1] = this[x, y].G / 255.0;
+					map[0, x, y, 2] = this[x, y].B / 255.0;
+				}
+			}
+			for (int c = 0; c < level; c++)
+			{
+				ProcMain.WriteLog("Canvas-Blur-c: " + c + " / " + level);
+
+				int w = 1 - r;
+
+				for (int x = 0; x < this.W; x++)
+				{
+					for (int y = 0; y < this.H; y++)
+					{
+						for (int color = 0; color < 3; color++)
+						{
+							double d = 0.0;
+							int dc = 0;
+
+							for (int xc = -1; xc <= 1; xc++)
+							{
+								for (int yc = -1; yc <= 1; yc++)
+								{
+									int sx = x + xc;
+									int sy = y + yc;
+
+									if (
+										0 <= sx && sx < this.W &&
+										0 <= sy && sy < this.H
+										)
+									{
+										d += map[r, sx, sy, color];
+										dc++;
+									}
+								}
+							}
+							map[w, x, y, color] = d / dc;
+						}
+					}
+				}
+				r = w;
+			}
+			for (int x = 0; x < this.W; x++)
+			{
+				for (int y = 0; y < this.H; y++)
+				{
+					this[x, y] = new I4Color(
+						SCommon.ToInt(map[r, x, y, 0] * 255.0),
+						SCommon.ToInt(map[r, x, y, 1] * 255.0),
+						SCommon.ToInt(map[r, x, y, 2] * 255.0),
+						255
+						);
+				}
+			}
+			ProcMain.WriteLog("Canvas-Blur-ED");
+		}
 	}
 }

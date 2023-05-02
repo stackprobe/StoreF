@@ -48,10 +48,20 @@ namespace Charlotte.Tests
 					Interior = rects[0].ToI4Rect();
 					Exterior = rects[1].ToI4Rect();
 
+					ProcMain.WriteLog("I.L " + Interior.L);
+					ProcMain.WriteLog("I.T " + Interior.T);
+					ProcMain.WriteLog("I.W " + Interior.W);
+					ProcMain.WriteLog("I.H " + Interior.H);
 					ProcMain.WriteLog("E.L " + Exterior.L);
 					ProcMain.WriteLog("E.T " + Exterior.T);
+					ProcMain.WriteLog("E.W " + Exterior.W);
+					ProcMain.WriteLog("E.H " + Exterior.H);
 
-					if (Math.Abs(Exterior.T) < 5 && Math.Abs(Exterior.L) < 5) // ? アスペクト比が(同じ || ほとんど同じ)
+					if (Picture.W < Interior.W || Picture.H < Interior.H) // ? 前面側も拡大してしまう(＝小さすぎる) -> 処理しない。
+					{
+						ProcMain.WriteLog("入力画像が小さすぎるためスキップします。");
+					}
+					else if (Interior.T < 5 && Interior.L < 5) // ? アスペクト比が(同じ || ほとんど同じ)
 					{
 						OutputSimple();
 					}
@@ -117,6 +127,9 @@ namespace Charlotte.Tests
 			canvas.Save(Path.Combine(SCommon.GetOutputDir(), PictureName + suffix + ".png"));
 
 			// ----
+
+			if (Picture.W < Exterior.W || Picture.H < Exterior.H) // 背面側について拡大した場合、画像が荒くなるのでボカす。
+				canvas.Blur(5);
 
 			canvas.FilterAllDot((dot, x, y) => new I4Color(dot.R / 2, dot.G / 2, dot.B / 2, 255));
 			canvas.DrawImage(Picture_I, Interior.L, Interior.T, false);

@@ -147,7 +147,7 @@ namespace Charlotte.Games
 			foreach (Input input in Inputs.GetAllInput())
 				input.FreezeInputUntilRelease();
 
-			double frostRate = 0.0;
+			double blurRate = 0.0;
 
 			for (; ; )
 			{
@@ -155,10 +155,10 @@ namespace Charlotte.Games
 
 				for (; ; )
 				{
-					DD.Approach(ref frostRate, 0.5, 0.98);
+					DD.Approach(ref blurRate, 0.5, 0.98);
 
 					DD.Draw(PauseWall.GetPicture(), new I2Point(GameConfig.ScreenSize.W / 2, GameConfig.ScreenSize.H / 2).ToD2Point());
-					DD.Frosting(frostRate);
+					DD.Blur(blurRate);
 
 					if (menu.Draw())
 						break;

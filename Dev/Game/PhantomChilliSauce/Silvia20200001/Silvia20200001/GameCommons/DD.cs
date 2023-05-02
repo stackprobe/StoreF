@@ -915,7 +915,7 @@ namespace Charlotte.GameCommons
 		/// 描画先スクリーンをぼかす。
 		/// </summary>
 		/// <param name="rate">ぼかしレート</param>
-		public static void Frosting(double rate)
+		public static void Blur(double rate)
 		{
 			DX.GraphFilter(
 				VScreen.CurrentDrawScreen == null ? DX.DX_SCREEN_BACK : VScreen.CurrentDrawScreen.GetHandle(),
