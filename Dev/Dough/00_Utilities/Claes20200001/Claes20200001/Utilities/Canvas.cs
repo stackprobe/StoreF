@@ -13,11 +13,17 @@ namespace Charlotte.Utilities
 	public class Canvas
 	{
 		private I4Color[,] Dots;
-		public int W { get; private set; } // 幅(0～)
-		public int H { get; private set; } // 高さ(0～)
+		public int W { get; private set; }
+		public int H { get; private set; }
 
 		public Canvas(int w, int h)
 		{
+			if (w < 1)
+				throw new Exception("Bad w");
+
+			if (h < 1)
+				throw new Exception("Bad h");
+
 			this.Dots = new I4Color[w, h];
 			this.W = w;
 			this.H = h;
@@ -454,7 +460,7 @@ namespace Charlotte.Utilities
 
 		/// <summary>
 		/// キャンバスの四隅の色を指定してグラデーションをかける。
-		/// 特殊用途
+		/// 特殊用途につき移管を検討
 		/// </summary>
 		/// <param name="match">グラデーションを描画するドットか</param>
 		/// <param name="ltColor">左上の色</param>
@@ -545,6 +551,17 @@ namespace Charlotte.Utilities
 			return this.SetMargin(matchOuter, outerColor, margin, margin, margin, margin);
 		}
 
+		/// <summary>
+		/// キャンバスの客体に対して指定されたマージンを適用する。
+		/// 特殊用途につき移管を検討
+		/// </summary>
+		/// <param name="matchOuter">背景(客体以外)のドットか</param>
+		/// <param name="outerColor">背景色</param>
+		/// <param name="margin_l">左側のマージン</param>
+		/// <param name="margin_t">上側のマージン</param>
+		/// <param name="margin_r">右側のマージン</param>
+		/// <param name="margin_b">下側のマージン</param>
+		/// <returns>新しいキャンバス</returns>
 		public Canvas SetMargin(
 			Func<I4Color, int, int, bool> matchOuter,
 			I4Color outerColor,
@@ -556,7 +573,7 @@ namespace Charlotte.Utilities
 		{
 			int x1 = int.MaxValue;
 			int y1 = int.MaxValue;
-			int x2 = -1; // -1 == 未検出
+			int x2 = -1; // -1 == 中身未検出
 			int y2 = -1;
 
 			for (int x = 0; x < this.W; x++)
@@ -573,16 +590,10 @@ namespace Charlotte.Utilities
 				}
 			}
 
-			I4Rect rect;
+			if (x2 == -1) // ? 中身未検出
+				throw new Exception("キャンバスの中身を検出できませんでした。");
 
-			if (x2 == -1) // ? 中身無し
-			{
-				rect = new I4Rect(0, 0, 0, 0);
-			}
-			else
-			{
-				rect = I4Rect.LTRB(x1, y1, x2 + 1, y2 + 1);
-			}
+			I4Rect rect = I4Rect.LTRB(x1, y1, x2 + 1, y2 + 1);
 
 			Canvas dest = new Canvas(margin_l + rect.W + margin_r, margin_t + rect.H + margin_b);
 
@@ -599,7 +610,6 @@ namespace Charlotte.Utilities
 		public Canvas Rotate90()
 		{
 			ProcMain.WriteLog("Canvas-Rotate-90-ST");
-
 			Canvas dest = new Canvas(this.H, this.W);
 
 			for (int x = 0; x < this.W; x++)

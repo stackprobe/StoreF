@@ -31,6 +31,20 @@ namespace Charlotte.Tests
 			//Console.WriteLine(bmp2);
 			//Console.WriteLine(bmp3);
 			//Console.WriteLine(bmp4);
+
+			// ----
+
+			int[,] u1 = new int[2100000000, 0]; // OK
+			int[,] u2 = new int[0, 2100000000]; // OK
+			int[,] u3 = new int[10000, 10000]; // OK
+			//int[,] u4 = new int[100000, 100000]; // メモリ不足
+			//int[,] u5 = new int[1000000, 1000000]; // メモリ不足
+
+			Console.WriteLine(u1);
+			Console.WriteLine(u2);
+			Console.WriteLine(u3);
+			//Console.WriteLine(u4);
+			//Console.WriteLine(u5);
 		}
 	}
 }
