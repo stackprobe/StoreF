@@ -57,11 +57,7 @@ namespace Charlotte.Tests
 					ProcMain.WriteLog("E.W " + Exterior.W);
 					ProcMain.WriteLog("E.H " + Exterior.H);
 
-					if (Picture.W < Interior.W || Picture.H < Interior.H) // ? 前面側も拡大してしまう(＝小さすぎる) -> 処理しない。
-					{
-						ProcMain.WriteLog("入力画像が小さすぎるためスキップします。");
-					}
-					else if (Interior.T < 5 && Interior.L < 5) // ? アスペクト比が(同じ || ほとんど同じ)
+					if (Interior.T < 5 && Interior.L < 5) // ? アスペクト比が(同じ || ほとんど同じ)
 					{
 						OutputSimple();
 					}
@@ -128,7 +124,7 @@ namespace Charlotte.Tests
 
 			// ----
 
-			if (Picture.W < Exterior.W || Picture.H < Exterior.H) // 背面側について拡大した場合、画像が荒くなるのでボカす。
+			if (Picture.W < Exterior.W || Picture.H < Exterior.H) // 背面側について拡大した場合、画像が荒くなるのでボカす。前面側はケアしない。
 				canvas.Blur(5);
 
 			canvas.FilterAllDot((dot, x, y) => new I4Color(dot.R / 2, dot.G / 2, dot.B / 2, 255));
