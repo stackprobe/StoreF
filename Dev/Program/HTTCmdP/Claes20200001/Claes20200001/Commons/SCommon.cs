@@ -2244,6 +2244,7 @@ namespace Charlotte.Commons
 				if (str == null)
 					str = "";
 
+				str = str.ToUpper(); // 小文字を許容する。
 				str = new string(str.Where(chr => (int)chr < CHAR_MAP_SIZE && this.CharMap[(int)chr] != -1).ToArray());
 
 				byte[] data;
