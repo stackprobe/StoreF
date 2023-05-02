@@ -20,6 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -902,7 +903,59 @@ public class SCommon {
 	}
 
 	public static class Base64 {
-		// TODO
+		private static final String ENCODED_CHARS =
+				SCommon.ALPHA_UPPER + SCommon.ALPHA_LOWER + SCommon.DECIMAL + "+/";
+
+		private static final String PADDING_CHAR = "=";
+
+		public static String encodeNoPadding(byte[] data) {
+			return encode(data).replace(PADDING_CHAR, "");
+		}
+
+		public static String encode(byte[] data) {
+			if (data == null) {
+				data = SCommon.EMPTY_BYTES;
+			}
+			return java.util.Base64.getEncoder().encodeToString(data);
+		}
+
+		public static byte[] decode(String str) {
+			if (str == null) {
+				str = "";
+			}
+
+			str = str.chars()
+					.mapToObj(chr -> Character.toString((char)chr))
+					.filter(chr -> ENCODED_CHARS.contains(chr))
+					.collect(Collectors.joining());
+
+			switch (str.length() % 4) {
+			case 0:
+				break;
+
+			case 1:
+				str = str.substring(0, str.length() - 1);
+				break;
+
+			case 2:
+				if (ENCODED_CHARS.indexOf(str.charAt(str.length() - 1)) % 16 != 0) {
+					str = str.substring(0, str.length() - 2);
+				}
+				break;
+
+			case 3:
+				if (ENCODED_CHARS.indexOf(str.charAt(str.length() - 1)) % 4 != 0) {
+					str = str.substring(0, str.length() - 3);
+				}
+				break;
+
+			default:
+				throw null; // never
+			}
+			str = str + PADDING_CHAR.repeat((4 - str.length() % 4) % 4);
+
+			return java.util.Base64.getDecoder().decode(str);
+		}
 	}
 
 	public static class TimeStampToSec {
@@ -1023,5 +1076,9 @@ public class SCommon {
 
 	public static void toThrowPrint(IAction routine) {
 		System.out.println("thrown: " + toThrow(routine).getMessage());
+	}
+
+	public static String stringJoin(String delimiter, Object... elements) {
+		return String.join(delimiter, Arrays.stream(elements).map(element -> "" + element).toArray(String[]::new));
 	}
 }
