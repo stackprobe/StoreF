@@ -35,7 +35,7 @@ public class SCommon {
 		}
 	}
 
-	public static <T> T re(IFunc<T> routine) {
+	public static <T> T re(IFunction<T> routine) {
 		try {
 			return routine.run();
 		}
@@ -1078,7 +1078,7 @@ public class SCommon {
 		System.out.println("thrown: " + toThrow(routine).getMessage());
 	}
 
-	public static String stringJoin(String delimiter, Object... elements) {
+	public static String joining(String delimiter, Object... elements) {
 		return String.join(delimiter, Arrays.stream(elements).map(element -> "" + element).toArray(String[]::new));
 	}
 }

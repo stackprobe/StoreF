@@ -79,7 +79,7 @@ public class RandomUnit {
 		return (double)getPositiveInt() / Integer.MAX_VALUE;
 	}
 
-	public double getReal(double minval, double maxval) {
+	public double getRealRange(double minval, double maxval) {
 		return getRate() * (maxval - minval) + minval;
 	}
 

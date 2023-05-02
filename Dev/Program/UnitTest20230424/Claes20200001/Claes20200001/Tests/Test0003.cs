@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Charlotte.Commons;
+using System.IO;
 
 namespace Charlotte.Tests
 {
@@ -160,6 +161,40 @@ namespace Charlotte.Tests
 			{
 				// noop
 			}
+		}
+
+		public void Test04()
+		{
+			for (int c = 0; c < 100; c++)
+			{
+				Console.WriteLine(SCommon.CRandom.GetRate().ToString("F20"));
+			}
+		}
+
+		public void Test05()
+		{
+			Test05_a(3.0, 7.0);
+			Test05_a(-3.0, 7.0);
+			Test05_a(-3.0, 3.0);
+			Test05_a(-7.0, 3.0);
+			Test05_a(-7.0, -3.0);
+		}
+
+		private void Test05_a(double minval, double maxval)
+		{
+			List<double> values = new List<double>();
+
+			for (int c = 0; c < 100; c++)
+			{
+				values.Add(SCommon.CRandom.GetRealRange(minval, maxval));
+			}
+			values.Sort(SCommon.Comp);
+
+			File.WriteAllLines(
+				Path.Combine(SCommon.GetOutputDir(), string.Format("({0})-({1}).txt", minval, maxval)),
+				values.Select(value => value.ToString()),
+				Encoding.ASCII
+				);
 		}
 	}
 }

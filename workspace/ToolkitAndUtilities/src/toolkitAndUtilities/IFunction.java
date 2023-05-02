@@ -1,5 +1,5 @@
 package toolkitAndUtilities;
 
-public interface IFunc<T> {
+public interface IFunction<T> {
 	public T run() throws Exception;
 }

@@ -1,6 +1,10 @@
 package tests.toolkitAndUtilities;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import toolkitAndUtilities.SCommon;
 
@@ -12,7 +16,9 @@ public class UnitTestMain {
 
 			//test0001_01(); // SCommon.getIndex
 			//test0002_01(); // SCommon.getRange
-			test0003_01(); // SCommon.Base64
+			//test0003_01(); // SCommon.Base64
+			//test0004_01(); // RandomUnit
+			test0004_02(); // RandomUnit
 
 			// --
 		}
@@ -39,7 +45,7 @@ public class UnitTestMain {
 	private static void test0001_01_a(String str, char target, int expect) {
 		int ret = SCommon.getIndex(SCommon.toList(str.toCharArray()), target, (a, b) -> (int)a - (int)b);
 
-		System.out.println(SCommon.stringJoin(", ", "TEST-0001-01", str, target, expect, ret));
+		System.out.println(SCommon.joining(", ", "TEST-0001-01", str, target, expect, ret));
 
 		boolean expectTrue =
 				ret == expect;
@@ -69,7 +75,7 @@ public class UnitTestMain {
 	private static void test0002_01_a(String str, char target, int expectRange_L, int expectRange_R) {
 		int[] range = SCommon.getRange(SCommon.toList(str.toCharArray()), target, (a, b) -> (int)a - (int)b);
 
-		System.out.println(SCommon.stringJoin(", ", "TEST-0002-01", str, target, expectRange_L, expectRange_R, range[0], range[1]));
+		System.out.println(SCommon.joining(", ", "TEST-0002-01", str, target, expectRange_L, expectRange_R, range[0], range[1]));
 
 		boolean expectTrue =
 				range[0] == expectRange_L &&
@@ -103,5 +109,34 @@ public class UnitTestMain {
 			}
 		}
 		System.out.println("OK! (TEST-0003-01)");
+	}
+
+	private static void test0004_01() {
+		for (int c = 0; c < 100; c++) {
+			System.out.println(String.format("%.20f", SCommon.cryptRandom.getRate()));
+		}
+	}
+
+	private static void test0004_02() {
+		test0004_02_a(3.0, 7.0);
+		test0004_02_a(-3.0, 7.0);
+		test0004_02_a(-3.0, 3.0);
+		test0004_02_a(-7.0, 3.0);
+		test0004_02_a(-7.0, -3.0);
+	}
+
+	private static void test0004_02_a(double minval, double maxval) {
+		List<Double> values = new ArrayList<Double>();
+
+		for (int c = 0; c < 100; c++) {
+			values.add(SCommon.cryptRandom.getRealRange(minval, maxval));
+		}
+		values.sort((a, b) -> SCommon.compare(a, b));
+
+		SCommon.writeAllLines(
+				new File("C:/temp/(" + minval + ")-(" + maxval + ").txt"),
+				values.stream().map(value -> "" + value).collect(Collectors.toList()),
+				SCommon.CHARSET_ASCII
+				);
 	}
 }
