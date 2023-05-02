@@ -13,8 +13,8 @@ namespace Charlotte.Utilities
 	public class Canvas
 	{
 		private I4Color[,] Dots;
-		public int W { get; private set; }
-		public int H { get; private set; }
+		public int W { get; private set; } // 幅(0～)
+		public int H { get; private set; } // 高さ(0～)
 
 		public Canvas(int w, int h)
 		{
@@ -452,19 +452,28 @@ namespace Charlotte.Utilities
 			return Math.Sqrt(pt.X * pt.X + pt.Y * pt.Y);
 		}
 
+		/// <summary>
+		/// キャンバスの四隅の色を指定してグラデーションをかける。
+		/// 特殊用途
+		/// </summary>
+		/// <param name="match">グラデーションを描画するドットか</param>
+		/// <param name="ltColor">左上の色</param>
+		/// <param name="rtColor">右上の色</param>
+		/// <param name="rbColor">右下の色</param>
+		/// <param name="lbColor">左下の色</param>
 		public void Gradation(
-			Predicate<I4Color> match,
+			Func<I4Color, int, int, bool> match,
 			I4Color ltColor,
 			I4Color rtColor,
-			I4Color lbColor,
-			I4Color rbColor
+			I4Color rbColor,
+			I4Color lbColor
 			)
 		{
-			for (int y = 0; y < this.H; y++)
+			for (int x = 0; x < this.W; x++)
 			{
-				for (int x = 0; x < this.W; x++)
+				for (int y = 0; y < this.H; y++)
 				{
-					if (match(this[x, y]))
+					if (match(this[x, y], x, y))
 					{
 						double xRate = (double)x / (this.W - 1);
 						double yRate = (double)y / (this.H - 1);
@@ -496,6 +505,11 @@ namespace Charlotte.Utilities
 			}
 		}
 
+		public void FilterAllDot(Func<I4Color, int, int, I4Color> filter)
+		{
+			this.FilterRect(new I4Rect(0, 0, this.W, this.H), filter);
+		}
+
 		public void FilterRect(I4Rect rect, Func<I4Color, int, int, I4Color> filter)
 		{
 			for (int x = rect.L; x < rect.R; x++)
@@ -507,9 +521,9 @@ namespace Charlotte.Utilities
 			}
 		}
 
-		public void FilterAllDot(Func<I4Color, int, int, I4Color> filter)
+		public Canvas GetClone()
 		{
-			this.FilterRect(new I4Rect(0, 0, this.W, this.H), filter);
+			return this.GetSubImage(new I4Rect(0, 0, this.W, this.H));
 		}
 
 		public Canvas GetSubImage(I4Rect rect)
@@ -526,9 +540,9 @@ namespace Charlotte.Utilities
 			return dest;
 		}
 
-		public Canvas GetClone()
+		public Canvas SetMargin(Func<I4Color, int, int, bool> matchOuter, I4Color outerColor, int margin)
 		{
-			return this.GetSubImage(new I4Rect(0, 0, this.W, this.H));
+			return this.SetMargin(matchOuter, outerColor, margin, margin, margin, margin);
 		}
 
 		public Canvas SetMargin(
@@ -576,11 +590,6 @@ namespace Charlotte.Utilities
 			dest.DrawImage(this.GetSubImage(rect), margin_l, margin_t, false);
 
 			return dest;
-		}
-
-		public Canvas SetMargin(Func<I4Color, int, int, bool> matchOuter, I4Color outerColor, int margin)
-		{
-			return this.SetMargin(matchOuter, outerColor, margin, margin, margin, margin);
 		}
 
 		/// <summary>
