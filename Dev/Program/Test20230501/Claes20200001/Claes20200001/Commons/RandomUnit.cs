@@ -75,6 +75,19 @@ namespace Charlotte.Commons
 				((uint)r[3] << 24);
 		}
 
+		private ulong GetULong48()
+		{
+			byte[] r = GetBytes(6);
+
+			return
+				((ulong)r[0] << 0) |
+				((ulong)r[1] << 8) |
+				((ulong)r[2] << 16) |
+				((ulong)r[3] << 24) |
+				((ulong)r[4] << 32) |
+				((ulong)r[5] << 40);
+		}
+
 		public ulong GetULong()
 		{
 			byte[] r = GetBytes(8);
@@ -141,7 +154,7 @@ namespace Charlotte.Commons
 
 		public double GetRate()
 		{
-			return (double)this.GetUInt() / uint.MaxValue;
+			return (double)this.GetULong48() / ((1UL << 48) - 1);
 		}
 
 		public double GetRealRange(double minval, double maxval)

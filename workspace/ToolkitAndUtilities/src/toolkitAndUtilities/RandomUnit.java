@@ -38,6 +38,18 @@ public class RandomUnit {
 		return getInt() & 0x7fffffff;
 	}
 
+	private long getLong48() {
+		byte[] data = getBytes(6);
+		long returnValue =
+				((data[0] & 0xffL) <<  0) |
+				((data[1] & 0xffL) <<  8) |
+				((data[2] & 0xffL) << 16) |
+				((data[3] & 0xffL) << 24) |
+				((data[4] & 0xffL) << 32) |
+				((data[5] & 0xffL) << 40);
+		return returnValue;
+	}
+
 	public long getLong() {
 		byte[] data = getBytes(8);
 		long returnValue =
@@ -76,7 +88,7 @@ public class RandomUnit {
 	}
 
 	public double getRate() {
-		return (double)getPositiveInt() / Integer.MAX_VALUE;
+		return (double)getLong48() / ((1L << 48) - 1);
 	}
 
 	public double getRealRange(double minval, double maxval) {
