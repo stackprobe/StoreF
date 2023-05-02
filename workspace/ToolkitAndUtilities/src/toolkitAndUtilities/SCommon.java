@@ -31,7 +31,7 @@ public class SCommon {
 			routine.run();
 		}
 		catch (Throwable e) {
-			throw new ErrorOrCancel(e);
+			throw new Error(e);
 		}
 	}
 
@@ -40,7 +40,7 @@ public class SCommon {
 			return routine.run();
 		}
 		catch (Throwable e) {
-			throw new ErrorOrCancel(e);
+			throw new Error(e);
 		}
 	}
 

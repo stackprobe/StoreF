@@ -86,9 +86,33 @@ namespace Charlotte.Tests
 					throw null;
 
 				// ----
+				// 余計な文字をランダムに挿入
+
+				str = SCommon.Base64.I.Encode(data);
+				str = RandomInsert(str, 0.3, new string[] { "\r\n", " ", "い", "ろは", "にほへ" });
+				retData = SCommon.Base64.I.Decode(str);
+
+				Console.WriteLine(str + " --> " + SCommon.Hex.I.ToString(retData));
+
+				if (SCommon.Comp(data, retData) != 0) // ? 不一致
+					throw null;
+
+				// ----
 				// パディング無し
 
 				str = SCommon.Base64.I.EncodeNoPadding(data);
+				retData = SCommon.Base64.I.Decode(str);
+
+				Console.WriteLine(str + " --> " + SCommon.Hex.I.ToString(retData));
+
+				if (SCommon.Comp(data, retData) != 0) // ? 不一致
+					throw null;
+
+				// ----
+				// パディング無し + 余計な文字をランダムに挿入
+
+				str = SCommon.Base64.I.EncodeNoPadding(data);
+				str = RandomInsert(str, 0.3, new string[] { "\r\n", " ", "い", "ろは", "にほへ" });
 				retData = SCommon.Base64.I.Decode(str);
 
 				Console.WriteLine(str + " --> " + SCommon.Hex.I.ToString(retData));
@@ -101,6 +125,23 @@ namespace Charlotte.Tests
 				Console.WriteLine("OK");
 			}
 			Console.WriteLine("OK! (TEST-0002-03)");
+		}
+
+		private string RandomInsert(string str, double rate, string[] ptns)
+		{
+			StringBuilder buff = new StringBuilder();
+
+			for (int index = 0; ; index++)
+			{
+				if (SCommon.CRandom.GetReal1() < rate)
+					buff.Append(SCommon.CRandom.ChooseOne(ptns));
+
+				if (str.Length <= index)
+					break;
+
+				buff.Append(str[index]);
+			}
+			return buff.ToString();
 		}
 	}
 }
