@@ -78,5 +78,29 @@ namespace Charlotte.Tests
 
 			Console.WriteLine("OK");
 		}
+
+		public void Test04()
+		{
+			Test04_a("", "", new string[] { "" });
+			Test04_a("", ":.;,", new string[] { "" });
+			Test04_a("A:B.C;D,E", ":.;,", new string[] { "A", "B", "C", "D", "E" });
+			Test04_a(":.;,", ":.;,", new string[] { "", "", "", "", "" });
+			Test04_a("AB-CD-EF", "", new string[] { "AB-CD-EF" });
+
+			Console.WriteLine("OK! (TEST-0010-04)");
+		}
+
+		private void Test04_a(string str, string delimiters, string[] expect)
+		{
+			string[] tokens = SCommon.Tokenize(str, delimiters);
+
+			if (tokens == null)
+				throw null;
+
+			if (SCommon.Comp(tokens, expect, SCommon.Comp) != 0) // ? 不一致
+				throw null;
+
+			Console.WriteLine("OK");
+		}
 	}
 }

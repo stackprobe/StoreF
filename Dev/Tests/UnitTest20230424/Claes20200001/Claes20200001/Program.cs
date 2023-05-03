@@ -80,7 +80,8 @@ namespace Charlotte
 			//new Test0009().Test04(); // SCommon.GetRange
 			//new Test0010().Test01(); // SCommon.Tokenize
 			//new Test0010().Test02(); // SCommon.Tokenize
-			new Test0010().Test03(); // SCommon.Tokenize
+			//new Test0010().Test03(); // SCommon.Tokenize
+			new Test0010().Test04(); // SCommon.Tokenize
 
 			// --
 		}
