@@ -70,9 +70,14 @@ namespace Charlotte.Utilities
 
 		public void Mask(byte[] data, int offset, int count)
 		{
+			this.Mask(data, offset, data, offset, count);
+		}
+
+		public void Mask(byte[] src, int srcOffset, byte[] dest, int destOffset, int count)
+		{
 			for (int index = 0; index < count; index++)
 			{
-				data[offset + index] ^= this.Next();
+				dest[destOffset + index] = (byte)(src[srcOffset + index] ^ this.Next());
 			}
 		}
 

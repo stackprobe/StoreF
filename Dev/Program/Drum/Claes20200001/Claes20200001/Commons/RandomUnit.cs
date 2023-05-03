@@ -75,6 +75,19 @@ namespace Charlotte.Commons
 				((uint)r[3] << 24);
 		}
 
+		private ulong GetULong48()
+		{
+			byte[] r = GetBytes(6);
+
+			return
+				((ulong)r[0] << 0) |
+				((ulong)r[1] << 8) |
+				((ulong)r[2] << 16) |
+				((ulong)r[3] << 24) |
+				((ulong)r[4] << 32) |
+				((ulong)r[5] << 40);
+		}
+
 		public ulong GetULong()
 		{
 			byte[] r = GetBytes(8);
@@ -129,51 +142,24 @@ namespace Charlotte.Commons
 			return this.GetInt(maxval - minval + 1) + minval;
 		}
 
-		/// <summary>
-		/// 真偽値をランダムに返す。
-		/// </summary>
-		/// <returns>真偽値</returns>
 		public bool GetBoolean()
 		{
 			return this.GetBit() != 0;
 		}
 
-		/// <summary>
-		/// -1 または 1 をランダムに返す。
-		/// </summary>
-		/// <returns>-1 または 1</returns>
 		public int GetSign()
 		{
 			return this.GetBit() * 2 - 1;
 		}
 
-		/// <summary>
-		/// 0.0 ～ 1.0 の乱数を返す。
-		/// </summary>
-		/// <returns>乱数</returns>
-		public double GetReal1()
+		public double GetRate()
 		{
-			return (double)this.GetUInt() / uint.MaxValue;
+			return (double)this.GetULong48() / ((1UL << 48) - 1);
 		}
 
-		/// <summary>
-		/// -1.0 ～ 1.0 の乱数を返す。
-		/// </summary>
-		/// <returns>乱数</returns>
-		public double GetReal2()
+		public double GetRealRange(double minval, double maxval)
 		{
-			return GetReal1() * 2.0 - 1.0;
-		}
-
-		/// <summary>
-		/// minval ～ maxval の乱数を返す。
-		/// </summary>
-		/// <param name="minval">最小値</param>
-		/// <param name="maxval">最大値</param>
-		/// <returns>乱数</returns>
-		public double GetReal3(double minval, double maxval)
-		{
-			return GetReal1() * (maxval - minval) + minval;
+			return this.GetRate() * (maxval - minval) + minval;
 		}
 
 		public T ChooseOne<T>(IList<T> list)

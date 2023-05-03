@@ -29,11 +29,13 @@ namespace Charlotte.WebServices
 
 			public void Write(byte[] data, int offset, int count)
 			{
-				this.CtrCipher.Mask(data, offset, count);
+				byte[] maskedPart = new byte[count];
+
+				this.CtrCipher.Mask(data, offset, maskedPart, 0, count);
 
 				using (FileStream writer = new FileStream(this.BufferFile, FileMode.Append, FileAccess.Write))
 				{
-					writer.Write(data, offset, count);
+					writer.Write(maskedPart, 0, count);
 				}
 				this.WroteSize += count;
 			}
