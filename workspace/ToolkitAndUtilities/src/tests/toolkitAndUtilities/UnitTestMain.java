@@ -2,6 +2,7 @@ package tests.toolkitAndUtilities;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -18,7 +19,11 @@ public class UnitTestMain {
 			//test0002_01(); // SCommon.getRange
 			//test0003_01(); // SCommon.Base64
 			//test0004_01(); // RandomUnit
-			test0004_02(); // RandomUnit
+			//test0004_02(); // RandomUnit
+			//test0005_01(); // SCommon.tokenize
+			//test0005_02(); // SCommon.tokenize
+			//test0005_03(); // SCommon.tokenize
+			test0005_04(); // SCommon.tokenize
 
 			// --
 		}
@@ -141,5 +146,89 @@ public class UnitTestMain {
 				values.stream().map(value -> "" + value).collect(Collectors.toList()),
 				SCommon.CHARSET_ASCII
 				);
+	}
+
+	private static void test0005_01() {
+		test0005_01_a("ABC:DEF:GHI:JKL", ":", -1, new String[] { "ABC", "DEF", "GHI", "JKL" });
+		test0005_01_a("ABC:DEF:GHI:JKL", ":", 2, new String[] { "ABC", "DEF:GHI:JKL" });
+		test0005_01_a("ABC:DEF:GHI:JKL", ":", 3, new String[] { "ABC", "DEF", "GHI:JKL" });
+		test0005_01_a("ABC:DEF:GHI:JKL", ":", 4, new String[] { "ABC", "DEF", "GHI", "JKL" });
+		test0005_01_a("ABC:DEF:GHI:JKL", ":", 5, new String[] { "ABC", "DEF", "GHI", "JKL" });
+
+		System.out.println("OK! (TEST-0005-01)");
+	}
+
+	private static void test0005_01_a(String text, String delimiters, int limit, String[] expect) {
+		List<String> tokens = SCommon.tokenize(text, delimiters, false, false, limit);
+
+		if (tokens == null) {
+			throw null;
+		}
+		if (SCommon.compare(tokens, Arrays.asList(expect), (a, b) -> a.compareTo(b)) != 0) { // ? not same
+			throw null;
+		}
+		System.out.println("OK");
+	}
+
+	private static void test0005_02() {
+		test0005_02_a("...---...", ".", false, new String[] { "", "", "", "---", "", "", "" });
+		test0005_02_a("...---...", ".", true, new String[] { "---" });
+
+		System.out.println("OK! (TEST-0005-02)");
+	}
+
+	private static void test0005_02_a(String text, String delimiters, boolean ignoreEmpty, String[] expect) {
+		List<String> tokens = SCommon.tokenize(text, delimiters, false, ignoreEmpty);
+
+		if (tokens == null) {
+			throw null;
+		}
+		if (SCommon.compare(tokens, Arrays.asList(expect), (a, b) -> a.compareTo(b)) != 0) { // ? not same
+			throw null;
+		}
+		System.out.println("OK");
+	}
+
+	private static void test0005_03() {
+		test0005_03_a("2023/04/05 23:30:59", "/ :", false
+				, new String[] { "2023", "04", "05", "23", "30", "59" });
+		test0005_03_a("2023/04/05 23:30:59", SCommon.DECIMAL, true
+				, new String[] { "2023", "04", "05", "23", "30", "59" });
+
+		System.out.println("OK! (TEST-0005-03)");
+	}
+
+	private static void test0005_03_a(String text, String delimiters, boolean meaningFlag, String[] expect) {
+		List<String> tokens = SCommon.tokenize(text, delimiters, meaningFlag);
+
+		if (tokens == null) {
+			throw null;
+		}
+		if (SCommon.compare(tokens, Arrays.asList(expect), (a, b) -> a.compareTo(b)) != 0) { // ? not same
+			throw null;
+		}
+		System.out.println("OK");
+	}
+
+	private static void test0005_04() {
+		test0005_04_a("", "", new String[] { "" });
+		test0005_04_a("", ":.;,", new String[] { "" });
+		test0005_04_a("A:B.C;D,E", ":.;,", new String[] { "A", "B", "C", "D", "E" });
+		test0005_04_a(":.;,", ":.;,", new String[] { "", "", "", "", "" });
+		test0005_04_a("AB-CD-EF", "", new String[] { "AB-CD-EF" });
+
+		System.out.println("OK! (TEST-0005-04)");
+	}
+
+	private static void test0005_04_a(String text, String delimiters, String[] expect) {
+		List<String> tokens = SCommon.tokenize(text, delimiters);
+
+		if (tokens == null) {
+			throw null;
+		}
+		if (SCommon.compare(tokens, Arrays.asList(expect), (a, b) -> a.compareTo(b)) != 0) { // ? not same
+			throw null;
+		}
+		System.out.println("OK");
 	}
 }

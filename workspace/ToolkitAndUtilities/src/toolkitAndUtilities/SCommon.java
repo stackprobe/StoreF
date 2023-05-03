@@ -408,35 +408,36 @@ public class SCommon {
 	}
 
 	public static List<String> tokenize(String text, String delimiters) {
-		List<String> dest = new ArrayList<String>();
-		int start = 0;
-
-		for (; ; ) {
-			int end = nextDelimiterIndex(text, delimiters, start);
-
-			if (end == -1) {
-				dest.add(text.substring(start));
-				break;
-			}
-			dest.add(text.substring(start, end));
-			start = end + 1;
-		}
-		return dest;
+		return tokenize(text, delimiters, false);
 	}
 
-	private static int nextDelimiterIndex(String str, String delimiters, int fromIndex) {
-		char[] delimiterArray = delimiters.toCharArray();
+	public static List<String> tokenize(String text, String delimiters, boolean meaningFlag) {
+		return tokenize(text, delimiters, meaningFlag, false);
+	}
 
-		for (int index = fromIndex; index < str.length(); index++) {
-			char chr = str.charAt(index);
+	public static List<String> tokenize(String text, String delimiters, boolean meaningFlag, boolean ignoreEmpty) {
+		return tokenize(text, delimiters, meaningFlag, ignoreEmpty, -1);
+	}
 
-			for (char delimiter : delimiterArray) {
-				if (chr == delimiter) {
-					return index;
-				}
+	public static List<String> tokenize(String text, String delimiters, boolean meaningFlag, boolean ignoreEmpty, int limit) {
+		List<String> dest = new ArrayList<String>();
+		StringBuffer tokenBuff = new StringBuffer();
+
+		for (char chr : text.toCharArray()) {
+			if ((delimiters.indexOf(chr) != -1) == meaningFlag || dest.size() + 1 == limit) {
+				tokenBuff.append(chr);
+			}
+			else {
+				dest.add(tokenBuff.toString());
+				tokenBuff = new StringBuffer();
 			}
 		}
-		return -1;
+		dest.add(tokenBuff.toString());
+
+		if (ignoreEmpty) {
+			dest.removeIf(token -> token.isEmpty());
+		}
+		return dest;
 	}
 
 	public static int compare(byte a, byte b) {
