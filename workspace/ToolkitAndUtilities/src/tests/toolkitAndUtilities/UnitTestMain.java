@@ -25,7 +25,8 @@ public class UnitTestMain {
 			//test0005_02(); // SCommon.tokenize
 			//test0005_03(); // SCommon.tokenize
 			//test0005_04(); // SCommon.tokenize
-			test0006_01(); // SCommon.merge
+			//test0006_01(); // SCommon.merge
+			test0007_01(); // SCommon.Hex
 
 			// --
 		}
@@ -334,5 +335,32 @@ public class UnitTestMain {
 				only.add(element);
 			}
 		}
+	}
+
+	private static void test0007_01() {
+		for (int testcnt = 0; testcnt < 10000; testcnt++) {
+			byte[] data = SCommon.cryptRandom.getBytes(SCommon.cryptRandom.getInt(1000));
+			String str = SCommon.Hex.toString(data);
+
+			if (str == null) {
+				throw null;
+			}
+			if (str.length() != data.length * 2) {
+				throw null;
+			}
+			if (!Pattern.matches("^[0-9a-f]*$", str)) {
+				throw null;
+			}
+
+			byte[] retData = SCommon.Hex.toBytes(str);
+
+			if (retData == null) {
+				throw null;
+			}
+			if (SCommon.compare(data, retData) != 0) { // ? not same
+				throw null;
+			}
+		}
+		System.out.println("OK! (TEST-0007-01)");
 	}
 }

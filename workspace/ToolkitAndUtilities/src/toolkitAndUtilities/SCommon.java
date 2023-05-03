@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -847,7 +848,30 @@ public class SCommon {
 	}
 
 	public static class Hex {
-		// TODO
+		public static String toString(byte[] src) {
+			if (src == null) {
+				throw new Error("Bad src");
+			}
+			StringBuffer buff = new StringBuffer(src.length * 2);
+
+			for (int index = 0; index < src.length; index++) {
+				buff.append(String.format("%02x", src[index] & 0xff));
+			}
+			return buff.toString();
+		}
+
+		public static byte[] toBytes(String src) {
+			if (src == null ||
+					!Pattern.matches("^([0-9A-Fa-f]{2})*$", src)) {
+				throw new Error("Bad src");
+			}
+			byte[] dest = new byte[src.length() / 2];
+
+			for (int index = 0; index < dest.length; index++) {
+				dest[index] = (byte)Integer.parseInt(src.substring(index * 2, index * 2 + 2), 16);
+			}
+			return dest;
+		}
 	}
 
 	public static <T> boolean hasSameComp(List<T> list, IComparator<T> comp) {
