@@ -115,6 +115,7 @@ public class UnitTestMain {
 		for (int c = 0; c < 100; c++) {
 			System.out.println(String.format("%.20f", SCommon.cryptRandom.getRate()));
 		}
+		System.out.println("done! (TEST-0004-01)");
 	}
 
 	private static void test0004_02() {
@@ -123,6 +124,8 @@ public class UnitTestMain {
 		test0004_02_a(-3.0, 3.0);
 		test0004_02_a(-7.0, 3.0);
 		test0004_02_a(-7.0, -3.0);
+
+		System.out.println("done! (TEST-0004-02)");
 	}
 
 	private static void test0004_02_a(double minval, double maxval) {

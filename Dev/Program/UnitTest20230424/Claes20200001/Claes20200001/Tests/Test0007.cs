@@ -31,6 +31,7 @@ namespace Charlotte.Tests
 				Console.WriteLine(wd.MakePath());
 				Console.WriteLine(wd.MakePath());
 			}
+			Console.WriteLine("done! (TEST-0007-01)");
 		}
 	}
 }

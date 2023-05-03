@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Charlotte.Commons;
 using System.IO;
+using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
@@ -169,6 +169,7 @@ namespace Charlotte.Tests
 			{
 				Console.WriteLine(SCommon.CRandom.GetRate().ToString("F20"));
 			}
+			Console.WriteLine("done! (TEST-0003-04)");
 		}
 
 		public void Test05()
@@ -178,6 +179,8 @@ namespace Charlotte.Tests
 			Test05_a(-3.0, 3.0);
 			Test05_a(-7.0, 3.0);
 			Test05_a(-7.0, -3.0);
+
+			Console.WriteLine("done! (TEST-0003-05)");
 		}
 
 		private void Test05_a(double minval, double maxval)

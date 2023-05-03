@@ -45,6 +45,18 @@ public class SCommon {
 	}
 
 	public static List<File> getFiles(File targetDirectory, boolean allDirectories) {
+		return getFilesAndDirectories(targetDirectory, allDirectories).stream()
+				.filter(file -> file.isFile())
+				.collect(Collectors.toList());
+	}
+
+	public static List<File> getDirectories(File targetDirectory, boolean allDirectories) {
+		return getFilesAndDirectories(targetDirectory, allDirectories).stream()
+				.filter(file -> file.isDirectory())
+				.collect(Collectors.toList());
+	}
+
+	public static List<File> getFilesAndDirectories(File targetDirectory, boolean allDirectories) {
 		if (targetDirectory == null ||
 				!targetDirectory.isDirectory()) {
 			throw new Error();
@@ -53,7 +65,7 @@ public class SCommon {
 		_files = new ArrayList<File>();
 		_allDirectories = allDirectories;
 
-		collectFiles(targetDirectory);
+		collectFilesAndDirectories(targetDirectory);
 
 		_files.sort((a, b) -> a.getAbsolutePath().compareToIgnoreCase(b.getAbsolutePath()));
 
@@ -68,12 +80,12 @@ public class SCommon {
 	private static List<File> _files;
 	private static boolean _allDirectories;
 
-	private static void collectFiles(File targetDirectory) {
+	private static void collectFilesAndDirectories(File targetDirectory) {
 		for (File file : targetDirectory.listFiles()) {
 			_files.add(file);
 
 			if (_allDirectories && file.isDirectory()) {
-				collectFiles(file);
+				collectFilesAndDirectories(file);
 			}
 		}
 	}
@@ -346,6 +358,22 @@ public class SCommon {
 			buff[code - codeMin] = (byte)code;
 		}
 		return SCommon.re(() -> new String(buff, CHARSET_SJIS));
+	}
+
+	public static byte[] readAllBytes(File file) {
+		return re(() -> {
+			try (FileInputStream reader = new FileInputStream(file)) {
+				return reader.readAllBytes();
+			}
+		});
+	}
+
+	public static String readAllText(File file, String charset) {
+		return re(() -> new String(readAllBytes(file), charset));
+	}
+
+	public static List<String> readAllLines(File file, String charset) {
+		return textToLines(readAllText(file, charset));
 	}
 
 	public static void writeAllBytes(File file, byte[] data) {
