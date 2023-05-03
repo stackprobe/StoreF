@@ -16,10 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -861,23 +857,27 @@ public class SCommon {
 		return hasSame(list, (a, b) -> comp.compare(a, b) == 0);
 	}
 
-	public static <T> boolean hasSame(List<T> list, BiFunction<T, T, Boolean> match) {
-		for (int r = 1; r < list.size(); r++) {
-			for (int l = 0; l < r; l++) {
-				if (match.apply(list.get(l), list.get(r)).booleanValue()) {
-					return true;
+	public static <T> boolean hasSame(List<T> list, IFunctionP2<T, T, Boolean> match) {
+		return re(() -> {
+			for (int r = 1; r < list.size(); r++) {
+				for (int l = 0; l < r; l++) {
+					if (match.run(list.get(l), list.get(r))) {
+						return true;
+					}
 				}
 			}
-		}
-		return false;
+			return false;
+		});
 	}
 
-	public static <T> void forEachPair(List<T> list, BiConsumer<T, T> routine) {
-		for (int r = 1; r < list.size(); r++) {
-			for (int l = 0; l < r; l++) {
-				routine.accept(list.get(l), list.get(r));
+	public static <T> void forEachPair(List<T> list, IActionP2<T, T> routine) {
+		ae(() -> {
+			for (int r = 1; r < list.size(); r++) {
+				for (int l = 0; l < r; l++) {
+					routine.run(list.get(l), list.get(r));
+				}
 			}
-		}
+		});
 	}
 
 	public static String[] parseIsland(String text, String singleTag) {
@@ -1030,58 +1030,62 @@ public class SCommon {
 		return getIndex(list, element -> comp.compare(element, targetValue));
 	}
 
-	public static <T> int getIndex(List<T> list, Function<T, Integer> comp) {
-		int l = -1;
-		int r = list.size();
+	public static <T> int getIndex(List<T> list, IFunctionP1<T, Integer> comp) {
+		return re(() -> {
+			int l = -1;
+			int r = list.size();
 
-		while (l + 1 < r) {
-			int m = (l + r) / 2;
-			int ret = comp.apply(list.get(m)).intValue();
+			while (l + 1 < r) {
+				int m = (l + r) / 2;
+				int ret = comp.run(list.get(m));
 
-			if (ret < 0) {
-				l = m;
+				if (ret < 0) {
+					l = m;
+				}
+				else if (0 < ret) {
+					r = m;
+				}
+				else {
+					return m;
+				}
 			}
-			else if (0 < ret) {
-				r = m;
-			}
-			else {
-				return m;
-			}
-		}
-		return -1; // not found
+			return -1; // not found
+		});
 	}
 
 	public static <T> int[] getRange(List<T> list, T targetValue, Comparator<T> comp) {
 		return getRange(list, element -> comp.compare(element, targetValue));
 	}
 
-	public static <T> int[] getRange(List<T> list, Function<T, Integer> comp) {
-		int l = -1;
-		int r = list.size();
+	public static <T> int[] getRange(List<T> list, IFunctionP1<T, Integer> comp) {
+		return re(() -> {
+			int l = -1;
+			int r = list.size();
 
-		while (l + 1 < r) {
-			int m = (l + r) / 2;
-			int ret = comp.apply(list.get(m)).intValue();
+			while (l + 1 < r) {
+				int m = (l + r) / 2;
+				int ret = comp.run(list.get(m)).intValue();
 
-			if (ret < 0) {
-				l = m;
+				if (ret < 0) {
+					l = m;
+				}
+				else if (0 < ret) {
+					r = m;
+				}
+				else {
+					l = getLeft(list, l, m, element -> comp.run(element).intValue() < 0);
+					r = getLeft(list, m, r, element -> comp.run(element).intValue() == 0) + 1;
+					break;
+				}
 			}
-			else if (0 < ret) {
-				r = m;
-			}
-			else {
-				l = getLeft(list, l, m, element -> comp.apply(element).intValue() < 0);
-				r = getLeft(list, m, r, element -> comp.apply(element).intValue() == 0) + 1;
-				break;
-			}
-		}
-		return new int[] { l, r };
+			return new int[] { l, r };
+		});
 	}
 
-	private static <T> int getLeft(List<T> list, int l, int r, Predicate<T> isLeft) {
+	private static <T> int getLeft(List<T> list, int l, int r, IPredicate<T> isLeft) throws Exception {
 		while (l + 1 < r) {
 			int m = (l + r) / 2;
-			boolean ret = isLeft.test(list.get(m));
+			boolean ret = isLeft.run(list.get(m));
 
 			if (ret) {
 				l = m;
