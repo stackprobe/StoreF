@@ -42,7 +42,7 @@ namespace Charlotte.Tests
 				"Kitakata",
 			};
 
-			string src = string.Join("", Enumerable.Repeat(0, SCommon.CRandom.GetInt(testDataScale)).Select(dummy => SCommon.CRandom.ChooseOne(words)));
+			string src = string.Join("", SCommon.GenerateLimit(SCommon.CRandom.GetInt(testDataScale), () => SCommon.CRandom.ChooseOne(words)));
 			string word1 = SCommon.CRandom.ChooseOne(words);
 			string word2 = SCommon.CRandom.ChooseOne(words);
 
@@ -97,10 +97,9 @@ namespace Charlotte.Tests
 			if (subTestDataScale < 2) throw null; // 2bs
 
 			char[] TEST_CHARS = SCommon.HALF.ToArray();
-			string src = new string(Enumerable
-				.Repeat(0, SCommon.CRandom.GetInt(testDataScale))
-				.Select(dummy => SCommon.CRandom.ChooseOne(TEST_CHARS))
-				.ToArray());
+			string src = new string(SCommon.GenerateLimit(
+				SCommon.CRandom.GetInt(testDataScale),
+				() => SCommon.CRandom.ChooseOne(TEST_CHARS)).ToArray());
 
 			string ans1 = src;
 			string ans2;
@@ -122,10 +121,9 @@ namespace Charlotte.Tests
 				if (ans1.Length < index1 + removeLength)
 					break;
 
-				string newPart = new string(Enumerable
-					.Repeat(0, SCommon.CRandom.GetInt(subTestDataScale))
-					.Select(dummy => SCommon.CRandom.ChooseOne(TEST_CHARS))
-					.ToArray());
+				string newPart = new string(SCommon.GenerateLimit(
+					SCommon.CRandom.GetInt(subTestDataScale),
+					() => SCommon.CRandom.ChooseOne(TEST_CHARS)).ToArray());
 
 				ans1 = ans1.Substring(0, index1) + newPart + ans1.Substring(index1 + removeLength);
 				sss.Splice(index2, removeLength, newPart);

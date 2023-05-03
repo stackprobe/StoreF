@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Charlotte.Commons;
 
 namespace Charlotte.Tests
 {
@@ -89,6 +90,21 @@ namespace Charlotte.Tests
 			foreach (int value in Enumerable.Repeat(0, 5))
 			{
 				Console.WriteLine(value);
+			}
+		}
+
+		public void Test04()
+		{
+			Func<string> generator = () =>
+			{
+				string value = Guid.NewGuid().ToString("B");
+				Console.WriteLine("生成した値：" + value);
+				return value;
+			};
+
+			foreach (string value in SCommon.GenerateLimit(5, generator))
+			{
+				Console.WriteLine("取得した値：" + value);
 			}
 		}
 	}

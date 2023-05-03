@@ -452,6 +452,23 @@ namespace Charlotte.Commons
 		}
 
 		/// <summary>
+		/// 生成器を指定回数実行して要素を列挙する。
+		/// Java の Stream.generate(generator).limit(count) と同じ。
+		/// 例：GenerateLimit(3, generator); -> { generator(), generator(), generator() }
+		/// </summary>
+		/// <typeparam name="T">要素の型</typeparam>
+		/// <param name="count">要素の個数</param>
+		/// <param name="generator">要素の生成器</param>
+		/// <returns>列挙</returns>
+		public static IEnumerable<T> GenerateLimit<T>(int count, Func<T> generator)
+		{
+			while (0 <= --count)
+			{
+				yield return generator();
+			}
+		}
+
+		/// <summary>
 		/// 列挙の列挙(2次元列挙)を列挙(1次元列挙)に変換する。
 		/// 例：{{ A, B, C }, { D, E, F }, { G, H, I }} -> { A, B, C, D, E, F, G, H, I }
 		/// 但し Concat(new X[] { AAA, BBB, CCC }) は AAA.Concat(BBB).Concat(CCC) と同じ。
