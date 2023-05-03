@@ -67,6 +67,7 @@
     <Compile Include="Tests\Test0008.cs" />
     <Compile Include="Tests\Test0009.cs" />
     <Compile Include="Tests\Test0010.cs" />
+    <Compile Include="Tests\Test0011.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

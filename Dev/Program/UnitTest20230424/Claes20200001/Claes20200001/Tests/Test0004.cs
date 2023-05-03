@@ -20,9 +20,9 @@ namespace Charlotte.Tests
 			{
 				if (testcnt % 100 == 0) Console.WriteLine("TEST-0004-01, " + testcnt); // cout
 
-				string[] lines = SCommon.GenerateLimit(
+				string[] lines = SCommon.Generate(
 					SCommon.CRandom.GetInt(100),
-					() => new string(SCommon.GenerateLimit(
+					() => new string(SCommon.Generate(
 						SCommon.CRandom.GetInt(100),
 						() => SCommon.CRandom.ChooseOne(TEST_CHARS)).ToArray())).ToArray();
 

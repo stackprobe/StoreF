@@ -102,10 +102,23 @@ namespace Charlotte.Tests
 				return value;
 			};
 
-			foreach (string value in SCommon.GenerateLimit(5, generator))
+			foreach (string value in SCommon.Generate(5, generator))
 			{
 				Console.WriteLine("取得した値：" + value);
 			}
+
+			// ----
+
+			Console.WriteLine(SCommon.Generate(10, () => 1).Count());
+			Console.WriteLine(SCommon.Generate(20, () => 1).Count());
+			Console.WriteLine(SCommon.Generate(30, () => 1).Count());
+			Console.WriteLine(SCommon.Generate(40, () => 1).Count());
+			Console.WriteLine(SCommon.Generate(50, () => 1).Count());
+
+			// ----
+
+			Console.WriteLine(SCommon.Generate(0, () => 1).Count());
+			Console.WriteLine(SCommon.Generate(-1, () => 1).Take(1000).Count());
 		}
 	}
 }

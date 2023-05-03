@@ -58,7 +58,7 @@ namespace Charlotte.Tests
 
 			for (int testcnt = 0; testcnt < 10000; testcnt++)
 			{
-				string str = new string(SCommon.GenerateLimit(SCommon.CRandom.GetInt(1000), () => SCommon.CRandom.ChooseOne(TEST_CHARS)).ToArray());
+				string str = new string(SCommon.Generate(SCommon.CRandom.GetInt(1000), () => SCommon.CRandom.ChooseOne(TEST_CHARS)).ToArray());
 
 				byte[] data = SCommon.Base64.I.Decode(str); // でたらめな入力文字列
 

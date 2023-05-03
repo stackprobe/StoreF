@@ -73,14 +73,14 @@ namespace Charlotte
 			//new Test0010().Test01(); // MillerRabinTester
 			//new Test0010().Test02(); // MillerRabinTester
 			//new Test0011().Test01(); // JsonNode
-			new Test0012().Test01(); // XMLNode
+			//new Test0012().Test01(); // XMLNode
 			//new Test0013().Test01(); // CtrCipher
 			//new Test0014().Test01(); // Canvas
 			//new Test0014().Test02(); // Canvas
 			//new Test0015().Test01(); // ArraySpliceSequencer
 			//new Test0015().Test02(); // ArraySpliceSequencer
 			//new Test0015().Test03(); // ArraySpliceSequencer
-			//new Test0015().Test04(); // ArraySpliceSequencer
+			new Test0015().Test04(); // ArraySpliceSequencer
 
 			// --
 		}

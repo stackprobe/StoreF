@@ -454,15 +454,15 @@ namespace Charlotte.Commons
 		/// <summary>
 		/// 生成器を指定回数実行して要素を列挙する。
 		/// Java の Stream.generate(generator).limit(count) と同じ。
-		/// 例：GenerateLimit(3, generator); -> { generator(), generator(), generator() }
+		/// 例：Generate(3, generator); -> { generator(), generator(), generator() }
 		/// </summary>
 		/// <typeparam name="T">要素の型</typeparam>
-		/// <param name="count">要素の個数</param>
+		/// <param name="count">要素の個数(0～), -1 == 無限</param>
 		/// <param name="generator">要素の生成器</param>
 		/// <returns>列挙</returns>
-		public static IEnumerable<T> GenerateLimit<T>(int count, Func<T> generator)
+		public static IEnumerable<T> Generate<T>(int count, Func<T> generator)
 		{
-			while (0 <= --count)
+			while (count == -1 || 0 <= --count)
 			{
 				yield return generator();
 			}
