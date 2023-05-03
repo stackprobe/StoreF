@@ -1,5 +1,5 @@
 package toolkitAndUtilities;
 
 public interface IPredicate<T> {
-	public boolean run(T value) throws Exception;
+	public boolean run(T value);
 }

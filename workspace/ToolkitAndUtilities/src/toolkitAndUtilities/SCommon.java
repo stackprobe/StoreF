@@ -10,7 +10,6 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +21,7 @@ import java.util.zip.GZIPOutputStream;
 
 public class SCommon {
 
-	public static void ae(IAction routine) {
+	public static void ae(IThrowableAction routine) {
 		try {
 			routine.run();
 		}
@@ -31,7 +30,7 @@ public class SCommon {
 		}
 	}
 
-	public static <T> T re(IFunction<T> routine) {
+	public static <T> T re(IThrowableFunction<T> routine) {
 		try {
 			return routine.run();
 		}
@@ -280,11 +279,11 @@ public class SCommon {
 
 	public static RandomUnit cryptRandom = new RandomUnit(new SecureRandom());
 
-	public static <T> int compare(List<T> a, List<T> b, Comparator<T> comp) {
+	public static <T> int compare(List<T> a, List<T> b, IComparator<T> comp) {
 		int count = Math.min(a.size(), b.size());
 
 		for (int index = 0; index < count; index++) {
-			int ret = comp.compare(a.get(index), b.get(index));
+			int ret = comp.run(a.get(index), b.get(index));
 
 			if (ret != 0) {
 				return ret;
@@ -353,7 +352,7 @@ public class SCommon {
 		for (int code = codeMin; code <= codeMax; code++) {
 			buff[code - codeMin] = (byte)code;
 		}
-		return SCommon.re(() -> new String(buff, CHARSET_SJIS));
+		return re(() -> new String(buff, CHARSET_SJIS));
 	}
 
 	public static byte[] readAllBytes(File file) {
@@ -381,7 +380,7 @@ public class SCommon {
 	}
 
 	public static void writeAllText(File file, String text, String charset) {
-		writeAllBytes(file, SCommon.re(() -> text.getBytes(charset)));
+		writeAllBytes(file, re(() -> text.getBytes(charset)));
 	}
 
 	public static void writeAllLines(File file, List<String> lines, String charset) {
@@ -821,13 +820,11 @@ public class SCommon {
 	}
 
 	public static byte[] getSHA512(List<byte[]> src) {
-		return re(() -> {
-			MessageDigest md = MessageDigest.getInstance("SHA-512");
-			for (byte[] block : src) {
-				md.update(block);
-			}
-			return md.digest();
-		});
+		MessageDigest md = re(() -> MessageDigest.getInstance("SHA-512"));
+		for (byte[] block : src) {
+			md.update(block);
+		}
+		return md.digest();
 	}
 
 	public static byte[] getSHA512(File file) {
@@ -853,31 +850,27 @@ public class SCommon {
 		// TODO
 	}
 
-	public static <T> boolean hasSameComp(List<T> list, Comparator<T> comp) {
-		return hasSame(list, (a, b) -> comp.compare(a, b) == 0);
+	public static <T> boolean hasSameComp(List<T> list, IComparator<T> comp) {
+		return hasSame(list, (a, b) -> comp.run(a, b) == 0);
 	}
 
 	public static <T> boolean hasSame(List<T> list, IFunctionP2<T, T, Boolean> match) {
-		return re(() -> {
-			for (int r = 1; r < list.size(); r++) {
-				for (int l = 0; l < r; l++) {
-					if (match.run(list.get(l), list.get(r))) {
-						return true;
-					}
+		for (int r = 1; r < list.size(); r++) {
+			for (int l = 0; l < r; l++) {
+				if (match.run(list.get(l), list.get(r))) {
+					return true;
 				}
 			}
-			return false;
-		});
+		}
+		return false;
 	}
 
 	public static <T> void forEachPair(List<T> list, IActionP2<T, T> routine) {
-		ae(() -> {
-			for (int r = 1; r < list.size(); r++) {
-				for (int l = 0; l < r; l++) {
-					routine.run(list.get(l), list.get(r));
-				}
+		for (int r = 1; r < list.size(); r++) {
+			for (int l = 0; l < r; l++) {
+				routine.run(list.get(l), list.get(r));
 			}
-		});
+		}
 	}
 
 	public static String[] parseIsland(String text, String singleTag) {
@@ -996,17 +989,17 @@ public class SCommon {
 	}
 
 	public static <T> void merge(
-			List<T> listA, List<T> listB, Comparator<T> comp,
+			List<T> listA, List<T> listB, IComparator<T> comp,
 			List<T> onlyA, List<T> bothA, List<T> bothB, List<T> onlyB) {
 
-		listA.sort(comp);
-		listB.sort(comp);
+		listA.sort(comp.toComparator());
+		listB.sort(comp.toComparator());
 
 		int readerA = 0;
 		int readerB = 0;
 
 		while (readerA < listA.size() && readerB < listB.size()) {
-			int ret = comp.compare(listA.get(readerA), listB.get(readerB));
+			int ret = comp.run(listA.get(readerA), listB.get(readerB));
 			if (ret < 0) {
 				onlyA.add(listA.get(readerA++));
 			}
@@ -1026,63 +1019,59 @@ public class SCommon {
 		}
 	}
 
-	public static <T> int getIndex(List<T> list, T targetValue, Comparator<T> comp) {
-		return getIndex(list, element -> comp.compare(element, targetValue));
+	public static <T> int getIndex(List<T> list, T targetValue, IComparator<T> comp) {
+		return getIndex(list, element -> comp.run(element, targetValue));
 	}
 
 	public static <T> int getIndex(List<T> list, IFunctionP1<T, Integer> comp) {
-		return re(() -> {
-			int l = -1;
-			int r = list.size();
+		int l = -1;
+		int r = list.size();
 
-			while (l + 1 < r) {
-				int m = (l + r) / 2;
-				int ret = comp.run(list.get(m));
+		while (l + 1 < r) {
+			int m = (l + r) / 2;
+			int ret = comp.run(list.get(m));
 
-				if (ret < 0) {
-					l = m;
-				}
-				else if (0 < ret) {
-					r = m;
-				}
-				else {
-					return m;
-				}
+			if (ret < 0) {
+				l = m;
 			}
-			return -1; // not found
-		});
+			else if (0 < ret) {
+				r = m;
+			}
+			else {
+				return m;
+			}
+		}
+		return -1; // not found
 	}
 
-	public static <T> int[] getRange(List<T> list, T targetValue, Comparator<T> comp) {
-		return getRange(list, element -> comp.compare(element, targetValue));
+	public static <T> int[] getRange(List<T> list, T targetValue, IComparator<T> comp) {
+		return getRange(list, element -> comp.run(element, targetValue));
 	}
 
 	public static <T> int[] getRange(List<T> list, IFunctionP1<T, Integer> comp) {
-		return re(() -> {
-			int l = -1;
-			int r = list.size();
+		int l = -1;
+		int r = list.size();
 
-			while (l + 1 < r) {
-				int m = (l + r) / 2;
-				int ret = comp.run(list.get(m)).intValue();
+		while (l + 1 < r) {
+			int m = (l + r) / 2;
+			int ret = comp.run(list.get(m)).intValue();
 
-				if (ret < 0) {
-					l = m;
-				}
-				else if (0 < ret) {
-					r = m;
-				}
-				else {
-					l = getLeft(list, l, m, element -> comp.run(element).intValue() < 0);
-					r = getLeft(list, m, r, element -> comp.run(element).intValue() == 0) + 1;
-					break;
-				}
+			if (ret < 0) {
+				l = m;
 			}
-			return new int[] { l, r };
-		});
+			else if (0 < ret) {
+				r = m;
+			}
+			else {
+				l = getLeft(list, l, m, element -> comp.run(element).intValue() < 0);
+				r = getLeft(list, m, r, element -> comp.run(element).intValue() == 0) + 1;
+				break;
+			}
+		}
+		return new int[] { l, r };
 	}
 
-	private static <T> int getLeft(List<T> list, int l, int r, IPredicate<T> isLeft) throws Exception {
+	private static <T> int getLeft(List<T> list, int l, int r, IPredicate<T> isLeft) {
 		while (l + 1 < r) {
 			int m = (l + r) / 2;
 			boolean ret = isLeft.run(list.get(m));

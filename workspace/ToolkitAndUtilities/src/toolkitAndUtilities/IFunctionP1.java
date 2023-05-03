@@ -1,5 +1,5 @@
 package toolkitAndUtilities;
 
 public interface IFunctionP1<P, T> {
-	public T run(P param) throws Exception;
+	public T run(P param);
 }

@@ -1,5 +1,5 @@
 package toolkitAndUtilities;
 
 public interface IActionP2<PA, PB> {
-	public void run(PA paramA, PB paramB) throws Exception;
+	public void run(PA paramA, PB paramB);
 }
