@@ -289,7 +289,7 @@ namespace Charlotte
 					channel.ResBody = null;
 					channel.ResBodyLength = -1L;
 
-					goto endFunc;
+					goto endOfSetResponse;
 				}
 
 				if (
@@ -327,7 +327,7 @@ namespace Charlotte
 				path = Path.Combine(docRoot, relPath);
 			}
 
-			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "目的パス：" + path);
+			bool targetToFile = false;
 
 			if (urlPath.EndsWith("/"))
 			{
@@ -335,8 +335,17 @@ namespace Charlotte
 
 				if (!File.Exists(path))
 					path += "l";
+
+				targetToFile = true;
 			}
-			else if (Directory.Exists(path))
+
+			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "目的パス：" + path);
+
+			if (ActionServer.TryPerform(head, urlPath, channel))
+			{
+				// noop
+			}
+			else if (!targetToFile && Directory.Exists(path))
 			{
 				if (host == null)
 					throw new Exception("No HOST header value");
@@ -345,22 +354,23 @@ namespace Charlotte
 				channel.ResHeaderPairs.Add(new string[] { "Location", "http://" + host + "/" + string.Join("", relPath.Split('\\').Select(v => EncodeUrl(v) + "/")) });
 				channel.ResBody = null;
 				channel.ResBodyLength = -1L;
-
-				goto endFunc;
-			}
-			if (ActionServer.TryPerform(head, urlPath, channel))
-			{
-				// noop
 			}
 			else if (File.Exists(path))
 			{
 				string file = path;
-				long fileSize = new FileInfo(file).Length;
+				FileInfo fileInfo = new FileInfo(path);
 
 				channel.ResStatus = 200;
 				channel.ResHeaderPairs.Add(new string[] { "Content-Type", ContentTypeCollection.I.GetContentType(Path.GetExtension(path)) });
-				channel.ResBody = E_ReadFile(file, fileSize);
-				channel.ResBodyLength = fileSize;
+				channel.ResBody = E_ReadFile(file, fileInfo.Length);
+				channel.ResBodyLength = fileInfo.Length;
+
+				if (head && channel.ResBody != null)
+				{
+					channel.ResHeaderPairs.Add(new string[] { "Content-Length", fileInfo.Length.ToString() });
+					channel.ResHeaderPairs.Add(new string[] { "X-Last-Modified-Time", new SCommon.SimpleDateTime(fileInfo.LastWriteTime).ToString("{0}/{1:D2}/{2:D2} {4:D2}:{5:D2}:{6:D2}") });
+					channel.ResBody = null;
+				}
 			}
 			else
 			{
@@ -379,17 +389,8 @@ namespace Charlotte
 					channel.ResBodyLength = fileSize;
 				}
 			}
-			if (head && channel.ResBody != null)
-			{
-				FileInfo fileInfo = new FileInfo(path);
 
-				channel.ResHeaderPairs.Add(new string[] { "Content-Length", fileInfo.Length.ToString() });
-				channel.ResHeaderPairs.Add(new string[] { "X-Last-Modified-Time", new SCommon.SimpleDateTime(fileInfo.LastWriteTime).ToString("{0}/{1:D2}/{2:D2} {4:D2}:{5:D2}:{6:D2}") });
-
-				channel.ResBody = null;
-			}
-
-		endFunc:
+		endOfSetResponse:
 			channel.ResHeaderPairs.Add(new string[] { "Server", "HTTCmd-P" });
 
 			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "RES-STATUS " + channel.ResStatus);

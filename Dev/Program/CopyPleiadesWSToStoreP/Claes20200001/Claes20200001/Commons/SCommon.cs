@@ -1151,6 +1151,23 @@ namespace Charlotte.Commons
 			}
 		}
 
+		public static double ToDouble(string str, double minval, double maxval, double defval)
+		{
+			try
+			{
+				double value = double.Parse(str);
+
+				if (value < minval || maxval < value)
+					throw new Exception("Value out of range");
+
+				return value;
+			}
+			catch
+			{
+				return defval;
+			}
+		}
+
 		/// <summary>
 		/// 文字列をSJIS(CP-932)の文字列に変換する。
 		/// 以下の関数を踏襲した。(慣習的実装)

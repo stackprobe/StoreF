@@ -283,7 +283,7 @@ namespace Charlotte
 				path = Path.Combine(docRoot, relPath);
 			}
 
-			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "目的パス：" + path);
+			bool targetToFile = false;
 
 			if (urlPath.EndsWith("/"))
 			{
@@ -291,8 +291,13 @@ namespace Charlotte
 
 				if (!File.Exists(path))
 					path += "l";
+
+				targetToFile = true;
 			}
-			else if (Directory.Exists(path))
+
+			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "目的パス：" + path);
+
+			if (!targetToFile && Directory.Exists(path))
 			{
 				if (host == null)
 					throw new Exception("No HOST header value");
@@ -301,18 +306,23 @@ namespace Charlotte
 				channel.ResHeaderPairs.Add(new string[] { "Location", "http://" + host + "/" + string.Join("", relPath.Split('\\').Select(v => EncodeUrl(v) + "/")) });
 				channel.ResBody = null;
 				channel.ResBodyLength = -1L;
-
-				goto endFunc;
 			}
-			if (File.Exists(path))
+			else if (File.Exists(path))
 			{
 				string file = path;
-				long fileSize = new FileInfo(file).Length;
+				FileInfo fileInfo = new FileInfo(path);
 
 				channel.ResStatus = 200;
 				channel.ResHeaderPairs.Add(new string[] { "Content-Type", ContentTypeCollection.I.GetContentType(Path.GetExtension(path)) });
-				channel.ResBody = E_ReadFile(file, fileSize);
-				channel.ResBodyLength = this.ResChunkMode ? -1L : fileSize;
+				channel.ResBody = E_ReadFile(file, fileInfo.Length);
+				channel.ResBodyLength = this.ResChunkMode ? -1L : fileInfo.Length;
+
+				if (head)
+				{
+					channel.ResHeaderPairs.Add(new string[] { "Content-Length", fileInfo.Length.ToString() });
+					channel.ResHeaderPairs.Add(new string[] { "X-Last-Modified-Time", new SCommon.SimpleDateTime(fileInfo.LastWriteTime).ToString("{0}/{1:D2}/{2:D2} {4:D2}:{5:D2}:{6:D2}") });
+					channel.ResBody = null;
+				}
 			}
 			else
 			{
@@ -331,17 +341,7 @@ namespace Charlotte
 					channel.ResBodyLength = this.ResChunkMode ? -1L : fileSize;
 				}
 			}
-			if (head && channel.ResBody != null)
-			{
-				FileInfo fileInfo = new FileInfo(path);
 
-				channel.ResHeaderPairs.Add(new string[] { "Content-Length", fileInfo.Length.ToString() });
-				channel.ResHeaderPairs.Add(new string[] { "X-Last-Modified-Time", new SCommon.SimpleDateTime(fileInfo.LastWriteTime).ToString("{0}/{1:D2}/{2:D2} {4:D2}:{5:D2}:{6:D2}") });
-
-				channel.ResBody = null;
-			}
-
-		endFunc:
 			channel.ResHeaderPairs.Add(new string[] { "Server", "HTTCmd" });
 
 			SockCommon.WriteLog(SockCommon.ErrorLevel_e.INFO, "RES-STATUS " + channel.ResStatus);
