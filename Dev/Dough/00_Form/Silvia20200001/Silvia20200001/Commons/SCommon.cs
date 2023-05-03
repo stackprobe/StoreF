@@ -2215,7 +2215,7 @@ namespace Charlotte.Commons
 					data = SCommon.Join(new byte[][]
 					{
 						data,
-						Enumerable.Range(0, 5 - data.Length % 5).Select(dummy => (byte)0).ToArray(),
+						Enumerable.Repeat((byte)0, 5 - data.Length % 5).ToArray(),
 					});
 
 					str = EncodeEven(data);
