@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import toolkitAndUtilities.SCommon;
 
@@ -23,7 +24,8 @@ public class UnitTestMain {
 			//test0005_01(); // SCommon.tokenize
 			//test0005_02(); // SCommon.tokenize
 			//test0005_03(); // SCommon.tokenize
-			test0005_04(); // SCommon.tokenize
+			//test0005_04(); // SCommon.tokenize
+			test0006_01(); // SCommon.merge
 
 			// --
 		}
@@ -230,5 +232,107 @@ public class UnitTestMain {
 			throw null;
 		}
 		System.out.println("OK");
+	}
+
+	private static void test0006_01() {
+		test0006_01_a(30000, 10, 30000);
+		test0006_01_a(10000, 30, 10000);
+		test0006_01_a(3000, 100, 3000);
+		test0006_01_a(1000, 300, 1000);
+		test0006_01_a(300, 1000, 300);
+		test0006_01_a(100, 3000, 100);
+		test0006_01_a(30, 10000, 30);
+		test0006_01_a(10, 30000, 10);
+
+		test0006_01_a(30000, 100, 3000);
+		test0006_01_a(10000, 300, 1000);
+		test0006_01_a(3000, 1000, 300);
+		test0006_01_a(1000, 3000, 100);
+		test0006_01_a(300, 10000, 30);
+		test0006_01_a(100, 30000, 10);
+
+		test0006_01_a(30000, 1000, 300);
+		test0006_01_a(10000, 3000, 100);
+		test0006_01_a(3000, 10000, 30);
+		test0006_01_a(1000, 30000, 10);
+
+		test0006_01_a(30000, 10000, 30);
+		test0006_01_a(10000, 30000, 10);
+
+		System.out.println("OK!");
+	}
+
+	private static void test0006_01_a(int valueScale, int countScale, int testCount) {
+		System.out.println(SCommon.joining(", ", "TEST-0006-01", valueScale, countScale, testCount));
+
+		for (int testcnt = 0; testcnt < testCount; testcnt++) {
+			List<String> listA = Stream.generate(() -> "" + SCommon.cryptRandom.getInt(valueScale))
+					.limit(SCommon.cryptRandom.getInt(countScale))
+					.collect(Collectors.toList());
+			List<String> listB = Stream.generate(() -> "" + SCommon.cryptRandom.getInt(valueScale))
+					.limit(SCommon.cryptRandom.getInt(countScale))
+					.collect(Collectors.toList());
+
+			List<String> ret_la = new ArrayList<String>(listA);
+			List<String> ret_lb = new ArrayList<String>(listB);
+			List<String> ret_oa = new ArrayList<String>();
+			List<String> ret_ba = new ArrayList<String>();
+			List<String> ret_bb = new ArrayList<String>();
+			List<String> ret_ob = new ArrayList<String>();
+
+			SCommon.merge(ret_la, ret_lb, (a, b) -> a.compareTo(b), ret_oa, ret_ba, ret_bb, ret_ob);
+
+			List<String> expect_la = new ArrayList<String>(listA);
+			List<String> expect_lb = new ArrayList<String>(listB);
+			List<String> expect_oa = new ArrayList<String>();
+			List<String> expect_ba = new ArrayList<String>();
+			List<String> expect_bb = new ArrayList<String>();
+			List<String> expect_ob = new ArrayList<String>();
+
+			test0006_01_b(listA, listB, expect_ba, expect_oa);
+			test0006_01_b(listB, listA, expect_bb, expect_ob);
+
+			expect_la.sort((a, b) -> a.compareTo(b));
+			expect_lb.sort((a, b) -> a.compareTo(b));
+			expect_oa.sort((a, b) -> a.compareTo(b));
+			expect_ba.sort((a, b) -> a.compareTo(b));
+			expect_bb.sort((a, b) -> a.compareTo(b));
+			expect_ob.sort((a, b) -> a.compareTo(b));
+
+			if (SCommon.compare(ret_la, expect_la, (a, b) -> a.compareTo(b)) != 0) { // ? not same
+				throw null;
+			}
+			if (SCommon.compare(ret_lb, expect_lb, (a, b) -> a.compareTo(b)) != 0) { // ? not same
+				throw null;
+			}
+			if (SCommon.compare(ret_oa, expect_oa, (a, b) -> a.compareTo(b)) != 0) { // ? not same
+				throw null;
+			}
+			if (SCommon.compare(ret_ba, expect_ba, (a, b) -> a.compareTo(b)) != 0) { // ? not same
+				throw null;
+			}
+			if (SCommon.compare(ret_bb, expect_bb, (a, b) -> a.compareTo(b)) != 0) { // ? not same
+				throw null;
+			}
+			if (SCommon.compare(ret_ob, expect_ob, (a, b) -> a.compareTo(b)) != 0) { // ? not same
+				throw null;
+			}
+		}
+		System.out.println("OK");
+	}
+
+	private static void test0006_01_b(List<String> list, List<String> another, List<String> both, List<String> only) {
+		another = new ArrayList<String>(another);
+
+		for (String element : list) {
+			int index = another.indexOf(element);
+			if (index != -1) {
+				another.set(index, null);
+				both.add(element);
+			}
+			else {
+				only.add(element);
+			}
+		}
 	}
 }
