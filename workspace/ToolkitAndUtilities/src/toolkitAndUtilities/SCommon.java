@@ -852,12 +852,12 @@ public class SCommon {
 			if (src == null) {
 				throw new Error("Bad src");
 			}
-			StringBuffer buff = new StringBuffer(src.length * 2);
+			StringBuffer dest = new StringBuffer(src.length * 2);
 
 			for (int index = 0; index < src.length; index++) {
-				buff.append(String.format("%02x", src[index] & 0xff));
+				dest.append(String.format("%02x", src[index] & 0xff));
 			}
-			return buff.toString();
+			return dest.toString();
 		}
 
 		public static byte[] toBytes(String src) {

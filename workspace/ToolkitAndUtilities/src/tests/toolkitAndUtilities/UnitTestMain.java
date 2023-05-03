@@ -274,14 +274,14 @@ public class UnitTestMain {
 					.limit(SCommon.cryptRandom.getInt(countScale))
 					.collect(Collectors.toList());
 
-			List<String> ret_la = new ArrayList<String>(listA);
-			List<String> ret_lb = new ArrayList<String>(listB);
+			List<String> inp_la = new ArrayList<String>(listA);
+			List<String> inp_lb = new ArrayList<String>(listB);
 			List<String> ret_oa = new ArrayList<String>();
 			List<String> ret_ba = new ArrayList<String>();
 			List<String> ret_bb = new ArrayList<String>();
 			List<String> ret_ob = new ArrayList<String>();
 
-			SCommon.merge(ret_la, ret_lb, (a, b) -> a.compareTo(b), ret_oa, ret_ba, ret_bb, ret_ob);
+			SCommon.merge(inp_la, inp_lb, (a, b) -> a.compareTo(b), ret_oa, ret_ba, ret_bb, ret_ob);
 
 			List<String> expect_la = new ArrayList<String>(listA);
 			List<String> expect_lb = new ArrayList<String>(listB);
@@ -300,10 +300,10 @@ public class UnitTestMain {
 			expect_bb.sort((a, b) -> a.compareTo(b));
 			expect_ob.sort((a, b) -> a.compareTo(b));
 
-			if (SCommon.compare(ret_la, expect_la, (a, b) -> a.compareTo(b)) != 0) { // ? not same
+			if (SCommon.compare(inp_la, expect_la, (a, b) -> a.compareTo(b)) != 0) { // ? not same
 				throw null;
 			}
-			if (SCommon.compare(ret_lb, expect_lb, (a, b) -> a.compareTo(b)) != 0) { // ? not same
+			if (SCommon.compare(inp_lb, expect_lb, (a, b) -> a.compareTo(b)) != 0) { // ? not same
 				throw null;
 			}
 			if (SCommon.compare(ret_oa, expect_oa, (a, b) -> a.compareTo(b)) != 0) { // ? not same
