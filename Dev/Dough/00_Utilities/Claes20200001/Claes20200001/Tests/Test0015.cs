@@ -44,7 +44,7 @@ namespace Charlotte.Tests
 				"Kitakata",
 			};
 
-			string src = string.Join("", Enumerable.Range(0, SCommon.CRandom.GetInt(testDataScale)).Select(dummy => SCommon.CRandom.ChooseOne(words)));
+			string src = string.Join("", Enumerable.Repeat(0, SCommon.CRandom.GetInt(testDataScale)).Select(dummy => SCommon.CRandom.ChooseOne(words)));
 			string word1 = SCommon.CRandom.ChooseOne(words);
 			string word2 = SCommon.CRandom.ChooseOne(words);
 
@@ -103,7 +103,7 @@ namespace Charlotte.Tests
 
 			char[] TEST_CHARS = SCommon.HALF.ToArray();
 			string src = new string(Enumerable
-				.Range(0, SCommon.CRandom.GetInt(testDataScale))
+				.Repeat(0, SCommon.CRandom.GetInt(testDataScale))
 				.Select(dummy => SCommon.CRandom.ChooseOne(TEST_CHARS))
 				.ToArray());
 
@@ -128,7 +128,7 @@ namespace Charlotte.Tests
 					break;
 
 				string newPart = new string(Enumerable
-					.Range(0, SCommon.CRandom.GetInt(subTestDataScale))
+					.Repeat(0, SCommon.CRandom.GetInt(subTestDataScale))
 					.Select(dummy => SCommon.CRandom.ChooseOne(TEST_CHARS))
 					.ToArray());
 
@@ -175,7 +175,7 @@ namespace Charlotte.Tests
 
 			char[] TEST_CHARS = SCommon.HALF.ToArray();
 			string src = new string(Enumerable
-				.Range(0, SCommon.CRandom.GetInt(testDataScale))
+				.Repeat(0, SCommon.CRandom.GetInt(testDataScale))
 				.Select(dummy => SCommon.CRandom.ChooseOne(TEST_CHARS))
 				.ToArray());
 
@@ -204,7 +204,7 @@ namespace Charlotte.Tests
 					case 0:
 						{
 							string newPart = new string(Enumerable
-								.Range(0, SCommon.CRandom.GetInt(subTestDataScale))
+								.Repeat(0, SCommon.CRandom.GetInt(subTestDataScale))
 								.Select(dummy => SCommon.CRandom.ChooseOne(TEST_CHARS))
 								.ToArray());
 
@@ -221,7 +221,7 @@ namespace Charlotte.Tests
 							int readStart = SCommon.CRandom.GetInt(subTestDataScale);
 
 							string newPart = new string(Enumerable
-								.Range(0, SCommon.CRandom.GetInt(subTestDataScale) + readStart)
+								.Repeat(0, SCommon.CRandom.GetInt(subTestDataScale) + readStart)
 								.Select(dummy => SCommon.CRandom.ChooseOne(TEST_CHARS))
 								.ToArray());
 
@@ -239,7 +239,7 @@ namespace Charlotte.Tests
 							int readLength = SCommon.CRandom.GetInt(subTestDataScale);
 
 							string newPart = new string(Enumerable
-								.Range(0, SCommon.CRandom.GetInt(subTestDataScale) + readStart + readLength)
+								.Repeat(0, SCommon.CRandom.GetInt(subTestDataScale) + readStart + readLength)
 								.Select(dummy => SCommon.CRandom.ChooseOne(TEST_CHARS))
 								.ToArray());
 

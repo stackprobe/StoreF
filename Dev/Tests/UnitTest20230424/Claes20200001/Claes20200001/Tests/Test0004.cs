@@ -20,8 +20,12 @@ namespace Charlotte.Tests
 			{
 				if (testcnt % 100 == 0) Console.WriteLine("TEST-0004-01, " + testcnt); // cout
 
-				string[] lines = Enumerable.Range(0, SCommon.CRandom.GetInt(100))
-					.Select(dummy1 => new string(Enumerable.Range(0, SCommon.CRandom.GetInt(100)).Select(dummy2 => SCommon.CRandom.ChooseOne(TEST_CHARS)).ToArray()))
+				string[] lines = Enumerable
+					.Repeat(0, SCommon.CRandom.GetInt(100))
+					.Select(dummy1 => new string(Enumerable
+						.Repeat(0, SCommon.CRandom.GetInt(100))
+						.Select(dummy2 => SCommon.CRandom.ChooseOne(TEST_CHARS))
+						.ToArray()))
 					.ToArray();
 
 				string strSrlz = SCommon.Serializer.I.Join(lines);

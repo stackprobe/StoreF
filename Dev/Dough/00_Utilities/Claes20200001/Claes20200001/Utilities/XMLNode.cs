@@ -163,7 +163,7 @@ namespace Charlotte.Utilities
 
 		private static string Indent(int depth)
 		{
-			return new string(Enumerable.Repeat('\t', depth).ToArray());
+			return new string('\t', depth);
 		}
 
 		private static string EncodeXML(string str)
