@@ -72,8 +72,23 @@ namespace Charlotte.Tests
 
 				value += (double)n / ((1UL << bits) - 1);
 
-				//Console.WriteLine(value.ToString("F20"));
+				//Console.WriteLine(value.ToString("F20")); // 十分な桁数があるけど正確な値が出ないっぽい。
 				Console.WriteLine(value.ToString("R"));
+			}
+		}
+
+		public void Test03()
+		{
+			Console.WriteLine("Range:");
+			foreach (int value in Enumerable.Range(0, 5))
+			{
+				Console.WriteLine(value);
+			}
+
+			Console.WriteLine("Repeat:");
+			foreach (int value in Enumerable.Repeat(0, 5))
+			{
+				Console.WriteLine(value);
 			}
 		}
 	}
