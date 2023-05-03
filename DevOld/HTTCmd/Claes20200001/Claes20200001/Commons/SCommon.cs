@@ -801,7 +801,7 @@ namespace Charlotte.Commons
 			}
 			str = SCommon.ToJString(bytes, true, false, false, true);
 
-			string[] words = str.Split('.');
+			string[] words = SCommon.Tokenize(str, ".");
 
 			for (int index = 0; index < words.Length; index++)
 			{
@@ -1004,7 +1004,7 @@ namespace Charlotte.Commons
 		{
 			text = text.Replace("\r", "");
 
-			string[] lines = text.Split('\n');
+			string[] lines = Tokenize(text, "\n");
 
 			if (1 <= lines.Length && lines[lines.Length - 1] == "")
 			{
@@ -1139,6 +1139,23 @@ namespace Charlotte.Commons
 			try
 			{
 				long value = long.Parse(str);
+
+				if (value < minval || maxval < value)
+					throw new Exception("Value out of range");
+
+				return value;
+			}
+			catch
+			{
+				return defval;
+			}
+		}
+
+		public static double ToDouble(string str, double minval, double maxval, double defval)
+		{
+			try
+			{
+				double value = double.Parse(str);
 
 				if (value < minval || maxval < value)
 					throw new Exception("Value out of range");
@@ -1875,29 +1892,29 @@ namespace Charlotte.Commons
 		/// <param name="delimiters">区切り文字の集合</param>
 		/// <param name="meaningFlag">区切り文字(delimiters)以外を区切り文字とするか</param>
 		/// <param name="ignoreEmpty">空文字列のトークンを除去するか</param>
-		/// <param name="limit">最大トークン数(1～), 0 == 無制限</param>
+		/// <param name="limit">最大トークン数(2～), -1 == 無制限</param>
 		/// <returns>トークン配列</returns>
-		public static string[] Tokenize(string str, string delimiters, bool meaningFlag = false, bool ignoreEmpty = false, int limit = 0)
+		public static string[] Tokenize(string str, string delimiters, bool meaningFlag = false, bool ignoreEmpty = false, int limit = -1)
 		{
-			StringBuilder buff = new StringBuilder();
 			List<string> tokens = new List<string>();
+			StringBuilder buff = new StringBuilder();
 
 			foreach (char chr in str)
 			{
-				if (tokens.Count + 1 == limit || delimiters.Contains(chr) == meaningFlag)
+				if (delimiters.Contains(chr) == meaningFlag || tokens.Count + 1 == limit)
 				{
 					buff.Append(chr);
 				}
 				else
 				{
-					if (!ignoreEmpty || buff.Length != 0)
-						tokens.Add(buff.ToString());
-
+					tokens.Add(buff.ToString());
 					buff = new StringBuilder();
 				}
 			}
-			if (!ignoreEmpty || buff.Length != 0)
-				tokens.Add(buff.ToString());
+			tokens.Add(buff.ToString());
+
+			if (ignoreEmpty)
+				tokens.RemoveAll(token => token == "");
 
 			return tokens.ToArray();
 		}

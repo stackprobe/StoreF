@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Charlotte.WebServices;
+using Charlotte.Commons;
 
 namespace Charlotte.Actions
 {
@@ -10,7 +11,7 @@ namespace Charlotte.Actions
 	{
 		public static void Perform(HTTPServerChannel channel)
 		{
-			string address = channel.Channel.Handler.RemoteEndPoint.ToString().Split(':')[0];
+			string address = SCommon.Tokenize(channel.Channel.Handler.RemoteEndPoint.ToString(), ":")[0];
 
 			if (100 < address.Length) // rough limit
 				throw new Exception("Bad IP-address");

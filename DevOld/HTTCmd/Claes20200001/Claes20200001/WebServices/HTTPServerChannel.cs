@@ -56,7 +56,7 @@ namespace Charlotte.WebServices
 			this.Channel.FirstLineRecving = false;
 
 			{
-				string[] tokens = this.FirstLine.Split(' ');
+				string[] tokens = SCommon.Tokenize(this.FirstLine, " ");
 
 				this.Method = tokens[0];
 				this.PathQuery = DecodeURL(tokens[1]);

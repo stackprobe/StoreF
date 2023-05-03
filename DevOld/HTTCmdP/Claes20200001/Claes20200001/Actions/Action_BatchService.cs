@@ -31,7 +31,7 @@ namespace Charlotte.Actions
 				// クライアントIP_チェック -- ローカル・ループバック・アドレス (localhost) 以外はアクセス不可とする。
 				{
 					string clientIPPort = channel.Channel.Handler.RemoteEndPoint.ToString();
-					string clientIP = clientIPPort.Split(':')[0];
+					string clientIP = SCommon.Tokenize(clientIPPort, ":")[0];
 
 					clientIP = SCommon.ToJString(clientIP, false, false, false, false); // 2bs
 
