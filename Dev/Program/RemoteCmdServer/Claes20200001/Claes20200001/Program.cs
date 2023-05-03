@@ -171,7 +171,7 @@ namespace Charlotte
 
 			ProcMain.WriteLog("URL-Path：" + urlPath);
 
-			string[] commandAndParams = urlPath.Substring(1).Split(new char[] { '/' }, 2);
+			string[] commandAndParams = SCommon.Tokenize(urlPath.Substring(1), "/", false, false, 2);
 			string command = commandAndParams[0];
 
 			if (command == "B") // バッチ実行

@@ -69,7 +69,7 @@ namespace Charlotte
 
 				foreach (string line in File.ReadAllLines(hc.ResFile, Encoding.ASCII).Where(v => v != ""))
 				{
-					string[] tokens = line.Split(' ');
+					string[] tokens = SCommon.Tokenize(line, " ");
 
 					string name = tokens[1];
 					string value = tokens[3].Replace(";", "");

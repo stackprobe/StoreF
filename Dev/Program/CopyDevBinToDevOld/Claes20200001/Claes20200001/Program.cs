@@ -76,7 +76,7 @@ namespace Charlotte
 
 			public ProjectInfo(string dir)
 			{
-				string[] pTkns = dir.Split('\\');
+				string[] pTkns = SCommon.Tokenize(dir, "\\");
 				int p = pTkns.Length;
 
 				if (SCommon.IndexOfIgnoreCase(Consts.SRC_LOCAL_DIRS, pTkns[--p]) == -1)

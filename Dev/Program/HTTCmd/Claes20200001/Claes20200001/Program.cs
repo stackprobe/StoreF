@@ -303,7 +303,7 @@ namespace Charlotte
 					throw new Exception("No HOST header value");
 
 				channel.ResStatus = 301;
-				channel.ResHeaderPairs.Add(new string[] { "Location", "http://" + host + "/" + string.Join("", relPath.Split('\\').Select(v => EncodeUrl(v) + "/")) });
+				channel.ResHeaderPairs.Add(new string[] { "Location", "http://" + host + "/" + string.Join("", SCommon.Tokenize(relPath, "\\").Select(v => EncodeUrl(v) + "/")) });
 				channel.ResBody = null;
 				channel.ResBodyLength = -1L;
 			}

@@ -50,7 +50,7 @@ namespace Charlotte.Actions
 					throw new Exception("channel.Method is not POST");
 
 				string clientIPPort = channel.Channel.Handler.RemoteEndPoint.ToString();
-				string clientIP = clientIPPort.Split(':')[0];
+				string clientIP = SCommon.Tokenize(clientIPPort, ":")[0];
 
 				clientIP = SCommon.ToJString(clientIP, false, false, false, false); // 2bs
 
@@ -73,7 +73,7 @@ namespace Charlotte.Actions
 					.Where(line => line != "")
 					.Select(line =>
 					{
-						string[] tokens = line.Split('=');
+						string[] tokens = SCommon.Tokenize(line, "=");
 
 						if (tokens.Length != 2)
 							throw new Exception();

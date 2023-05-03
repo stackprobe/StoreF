@@ -1892,15 +1892,16 @@ namespace Charlotte.Commons
 		/// <param name="delimiters">区切り文字の集合</param>
 		/// <param name="meaningFlag">区切り文字(delimiters)以外を区切り文字とするか</param>
 		/// <param name="ignoreEmpty">空文字列のトークンを除去するか</param>
+		/// <param name="limit">最大トークン数(2～), -1 == 無制限</param>
 		/// <returns>トークン配列</returns>
-		public static string[] Tokenize(string str, string delimiters, bool meaningFlag = false, bool ignoreEmpty = false)
+		public static string[] Tokenize(string str, string delimiters, bool meaningFlag = false, bool ignoreEmpty = false, int limit = -1)
 		{
 			List<string> tokens = new List<string>();
 			StringBuilder buff = new StringBuilder();
 
 			foreach (char chr in str)
 			{
-				if (delimiters.Contains(chr) == meaningFlag)
+				if (delimiters.Contains(chr) == meaningFlag || tokens.Count + 1 == limit)
 				{
 					buff.Append(chr);
 				}
