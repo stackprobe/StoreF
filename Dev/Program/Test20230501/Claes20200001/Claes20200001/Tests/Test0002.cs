@@ -170,12 +170,24 @@ namespace Charlotte.Tests
 
 		public void Test07()
 		{
-			byte[] data = SCommon.CRandom.GetBytes(100);
+			byte[] data = Encoding.UTF8.GetBytes("Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune, Planet-9");
+			//byte[] data = SCommon.CRandom.GetBytes(30);
+			//byte[] data = SCommon.CRandom.GetBytes(100);
 			byte[] gzData = SCommon.Compress(data);
 			string gzStr = SCommon.Base64.I.Encode(gzData);
 
+			Console.WriteLine(SCommon.Hex.I.ToString(data));
 			Console.WriteLine(SCommon.Hex.I.ToString(gzData));
 			Console.WriteLine(gzStr);
+
+			// ----
+
+			string zs = "H4sIAAAAAAAA//NNLUouLarUUQhLzSst1lFwTSwqydBR8E0sAnK8SgsyS1KLdBSCE0tKi/J0FEKLEsGq/FILSkrzUnUUAnIS81JLdC0Bufv0hEcAAAA="; // Java
+			byte[] zd = SCommon.Base64.I.Decode(zs);
+			byte[] dd = SCommon.Decompress(zd);
+			string ds = Encoding.UTF8.GetString(dd);
+
+			Console.WriteLine(ds);
 		}
 	}
 }
