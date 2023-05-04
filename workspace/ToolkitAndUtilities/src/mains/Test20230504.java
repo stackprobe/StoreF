@@ -2,7 +2,7 @@ package mains;
 
 import toolkitAndUtilities.SCommon;
 
-public class ToolkitMain {
+public class Test20230504 {
 	public static void main(String[] args) {
 		try {
 

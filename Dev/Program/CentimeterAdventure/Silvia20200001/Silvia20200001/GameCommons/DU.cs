@@ -377,6 +377,51 @@ namespace Charlotte.GameCommons
 			return count == 1 || POUND_FIRST_DELAY < count && (count - POUND_FIRST_DELAY) % POUND_DELAY == 1;
 		}
 
+		public static class SaveDataFileFormatter
+		{
+			private const int SEGMENT_SIZE = 80;
+
+			public static byte[] Encode(byte[] data)
+			{
+				if (data == null)
+					throw new Exception("Bad data");
+
+				using (MemoryStream mem = new MemoryStream())
+				{
+					for (int index = 0; index < data.Length; index++)
+					{
+						if (1 <= index && index % SEGMENT_SIZE == 0)
+						{
+							mem.WriteByte(0x0d); // CR
+							mem.WriteByte(0x0a); // LF
+						}
+						mem.WriteByte(data[index]);
+					}
+					if (data.Length % SEGMENT_SIZE != 0)
+					{
+						int count = SEGMENT_SIZE - data.Length % SEGMENT_SIZE;
+
+						while (0 <= --count)
+						{
+							mem.WriteByte((byte)'*');
+						}
+					}
+					mem.WriteByte(0x0d); // CR
+					mem.WriteByte(0x0a); // LF
+
+					return mem.ToArray();
+				}
+			}
+
+			public static byte[] Decode(byte[] data)
+			{
+				if (data == null)
+					throw new Exception("Bad data");
+
+				return data.Where(chr => (byte)'+' <= chr && chr <= (byte)'z').ToArray();
+			}
+		}
+
 		public static class Hasher
 		{
 			private static byte[] COUNTER_SHUFFLE = Encoding.ASCII.GetBytes("Gattonero-2023-04-05_COUNTER_SHUFFLE_{e43e01aa-ca4f-43d3-8be7-49cd60e9415e}_");
@@ -387,7 +432,7 @@ namespace Charlotte.GameCommons
 				if (data == null)
 					throw new Exception("Bad data");
 
-				return SCommon.Join(new byte[][] { data, GetHash(data) });
+				return SCommon.Join(new byte[][] { GetHash(data), data });
 			}
 
 			public static byte[] UnaddHash(byte[] data)
@@ -410,19 +455,24 @@ namespace Charlotte.GameCommons
 				if (data.Length < HASH_SIZE)
 					throw new Exception("Bad Length");
 
-				byte[] rDat = data.Take(data.Length - HASH_SIZE).ToArray();
-				byte[] hash = data.Skip(data.Length - HASH_SIZE).ToArray();
-				byte[] recalcedHash = GetHash(rDat);
+				byte[] hash = SCommon.GetPart(data, 0, HASH_SIZE);
+				byte[] retData = SCommon.GetPart(data, HASH_SIZE);
+				byte[] recalcedHash = GetHash(retData);
 
 				if (SCommon.Comp(hash, recalcedHash) != 0)
 					throw new Exception("Bad hash");
 
-				return rDat;
+				return retData;
 			}
 
 			private static byte[] GetHash(byte[] data)
 			{
-				return Encoding.ASCII.GetBytes(SCommon.Base64.I.Encode(SCommon.GetSHA512(new byte[][] { COUNTER_SHUFFLE, data }).Take(15).ToArray()));
+				byte[] hash = Encoding.ASCII.GetBytes(SCommon.Base64.I.Encode(SCommon.GetSHA512(new byte[][] { COUNTER_SHUFFLE, data }).Take(15).ToArray()));
+
+				if (hash.Length != HASH_SIZE) // 2bs
+					throw null; // never
+
+				return hash;
 			}
 		}
 

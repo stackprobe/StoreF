@@ -138,8 +138,6 @@ namespace Charlotte.GameCommons
 				logSaveDir = @"C:\temp";
 				logFile = @"C:\temp\Game.log";
 				saveDataFile = @"C:\temp\SaveData.dat";
-#else
-				throw new Exception("DEBUG is True");
 #endif
 			}
 			else
@@ -163,13 +161,13 @@ namespace Charlotte.GameCommons
 					throw new Exception("no file: " + requiredFileName);
 
 			if (File.Exists(saveDataFile))
-				GameSetting.Deserialize(Encoding.ASCII.GetString(DU.Hasher.UnaddHash(File.ReadAllBytes(saveDataFile))));
+				GameSetting.Deserialize(Encoding.ASCII.GetString(DU.Hasher.UnaddHash(DU.SaveDataFileFormatter.Decode(File.ReadAllBytes(saveDataFile)))));
 			else
 				GameSetting.Initialize();
 
 			DD.Save = () =>
 			{
-				File.WriteAllBytes(saveDataFile, DU.Hasher.AddHash(Encoding.ASCII.GetBytes(GameSetting.Serialize())));
+				File.WriteAllBytes(saveDataFile, DU.SaveDataFileFormatter.Encode(DU.Hasher.AddHash(Encoding.ASCII.GetBytes(GameSetting.Serialize()))));
 			};
 
 			DD.Finalizers.Add(DD.Save);
