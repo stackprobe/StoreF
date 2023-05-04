@@ -121,7 +121,7 @@ namespace Charlotte
 			// 引数チェックここまで
 
 			using (FileStream fileReader = new FileStream(rFile, FileMode.Open, FileAccess.Read))
-			using (GZipStream reader = new GZipStream(fileReader, CompressionMode.Decompress)) // BUG: 第3引数にtrueが要る -- 顕在化しないBug @ 2023.5.4
+			using (GZipStream reader = new GZipStream(fileReader, CompressionMode.Decompress)) // BUG: 第3引数にtrueが要る -- 現時点では顕在化しない想定 @ 2023.5.4
 			{
 				ProcMain.WriteLog("Phase-1");
 
