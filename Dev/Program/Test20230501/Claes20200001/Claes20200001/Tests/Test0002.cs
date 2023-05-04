@@ -229,5 +229,47 @@ namespace Charlotte.Tests
 
 			Console.WriteLine(ds);
 		}
+
+		public void Test08()
+		{
+			for (int testcnt = 0; testcnt < 10000; testcnt++)
+			{
+				byte[] data = SCommon.CRandom.GetBytes(SCommon.CRandom.GetInt(1000));
+
+				//Console.WriteLine(data.Length); // cout
+
+				using (MemoryStream mem = new MemoryStream())
+				{
+					int offset = 0;
+
+					while (offset < data.Length)
+					{
+						int size = SCommon.CRandom.GetInt(1300);
+						size = Math.Min(size, data.Length - offset);
+
+						mem.Write(SCommon.GetPart(data, offset, size), 0, size);
+
+						offset += size;
+					}
+
+					// メモリストリームは閉じても有効である想定
+					//
+					mem.Close();
+					mem.Dispose();
+
+					// ----
+
+					byte[] retData = mem.ToArray();
+
+					if (retData == null)
+						throw null;
+
+					//Console.WriteLine(retData.Length); // cout
+
+					if (SCommon.Comp(data, retData) != 0) // ? 不一致
+						throw null;
+				}
+			}
+		}
 	}
 }
