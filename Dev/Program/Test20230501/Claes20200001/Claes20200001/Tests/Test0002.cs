@@ -138,6 +138,8 @@ namespace Charlotte.Tests
 
 		public void Test06()
 		{
+			SCommon.Batch(new string[] { @"DIR > C:\temp\1.txt" }, @"C:\temp");
+
 			FileStream reader;
 			FileStream writer;
 
@@ -148,10 +150,13 @@ namespace Charlotte.Tests
 				{
 					reader.CopyTo(gz);
 
+					Console.WriteLine(reader.CanRead); // True
 					Console.WriteLine(writer.CanWrite); // True
 				}
+				Console.WriteLine(reader.CanRead); // True
 				Console.WriteLine(writer.CanWrite); // False
 			}
+			Console.WriteLine(reader.CanRead); // False
 			Console.WriteLine(writer.CanWrite); // False
 
 			using (reader = new FileStream(@"C:\temp\1.txt", FileMode.Open, FileAccess.Read))
@@ -161,10 +166,45 @@ namespace Charlotte.Tests
 				{
 					reader.CopyTo(gz);
 
+					Console.WriteLine(reader.CanRead); // True
 					Console.WriteLine(writer.CanWrite); // True
 				}
+				Console.WriteLine(reader.CanRead); // True
 				Console.WriteLine(writer.CanWrite); // True
 			}
+			Console.WriteLine(reader.CanRead); // False
+			Console.WriteLine(writer.CanWrite); // False
+
+			using (reader = new FileStream(@"C:\temp\2.txt", FileMode.Open, FileAccess.Read))
+			using (writer = new FileStream(@"C:\temp\1.txt", FileMode.Create, FileAccess.Write))
+			{
+				using (GZipStream gz = new GZipStream(reader, CompressionMode.Decompress)) // gzを閉じたらreaderも閉じる。
+				{
+					gz.CopyTo(writer);
+
+					Console.WriteLine(reader.CanRead); // True
+					Console.WriteLine(writer.CanWrite); // True
+				}
+				Console.WriteLine(reader.CanRead); // False
+				Console.WriteLine(writer.CanWrite); // True
+			}
+			Console.WriteLine(reader.CanRead); // False
+			Console.WriteLine(writer.CanWrite); // False
+
+			using (reader = new FileStream(@"C:\temp\2.txt", FileMode.Open, FileAccess.Read))
+			using (writer = new FileStream(@"C:\temp\1.txt", FileMode.Create, FileAccess.Write))
+			{
+				using (GZipStream gz = new GZipStream(reader, CompressionMode.Decompress, true)) // gzを閉じてもreaderは閉じない。
+				{
+					gz.CopyTo(writer);
+
+					Console.WriteLine(reader.CanRead); // True
+					Console.WriteLine(writer.CanWrite); // True
+				}
+				Console.WriteLine(reader.CanRead); // True
+				Console.WriteLine(writer.CanWrite); // True
+			}
+			Console.WriteLine(reader.CanRead); // False
 			Console.WriteLine(writer.CanWrite); // False
 		}
 
