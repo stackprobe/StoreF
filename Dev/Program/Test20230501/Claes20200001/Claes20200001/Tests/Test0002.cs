@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using Charlotte.Commons;
+using System.IO;
+using System.IO.Compression;
 
 namespace Charlotte.Tests
 {
@@ -119,6 +121,61 @@ namespace Charlotte.Tests
 
 			Console.WriteLine(SCommon.Generate(0, () => 1).Count());
 			Console.WriteLine(SCommon.Generate(-1, () => 1).Take(1000).Count());
+			Console.WriteLine(SCommon.Generate(-1, () => 1).Take(2345).Count());
+		}
+
+		public void Test05()
+		{
+			string str = SCommon.HALF;
+
+			for (int c = 0; c < 20; c++)
+			{
+				str = SCommon.Serializer.I.Join(new string[] { str });
+
+				Console.WriteLine(str.Length + " : " + str);
+			}
+		}
+
+		public void Test06()
+		{
+			FileStream reader;
+			FileStream writer;
+
+			using (reader = new FileStream(@"C:\temp\1.txt", FileMode.Open, FileAccess.Read))
+			using (writer = new FileStream(@"C:\temp\2.txt", FileMode.Create, FileAccess.Write))
+			{
+				using (GZipStream gz = new GZipStream(writer, CompressionMode.Compress)) // gzを閉じたらwriterも閉じる。
+				{
+					reader.CopyTo(gz);
+
+					Console.WriteLine(writer.CanWrite); // True
+				}
+				Console.WriteLine(writer.CanWrite); // False
+			}
+			Console.WriteLine(writer.CanWrite); // False
+
+			using (reader = new FileStream(@"C:\temp\1.txt", FileMode.Open, FileAccess.Read))
+			using (writer = new FileStream(@"C:\temp\2.txt", FileMode.Create, FileAccess.Write))
+			{
+				using (GZipStream gz = new GZipStream(writer, CompressionMode.Compress, true)) // gzを閉じてもwriterは閉じない。
+				{
+					reader.CopyTo(gz);
+
+					Console.WriteLine(writer.CanWrite); // True
+				}
+				Console.WriteLine(writer.CanWrite); // True
+			}
+			Console.WriteLine(writer.CanWrite); // False
+		}
+
+		public void Test07()
+		{
+			byte[] data = SCommon.CRandom.GetBytes(100);
+			byte[] gzData = SCommon.Compress(data);
+			string gzStr = SCommon.Base64.I.Encode(gzData);
+
+			Console.WriteLine(SCommon.Hex.I.ToString(gzData));
+			Console.WriteLine(gzStr);
 		}
 	}
 }

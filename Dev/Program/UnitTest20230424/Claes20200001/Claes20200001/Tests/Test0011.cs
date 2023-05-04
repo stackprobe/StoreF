@@ -46,6 +46,7 @@ namespace Charlotte.Tests
 
 			if (SCommon.Generate(0, () => 1).Count() != 0) throw null;
 			if (SCommon.Generate(-1, () => 1).Take(1000).Count() != 1000) throw null;
+			if (SCommon.Generate(-1, () => 1).Take(2345).Count() != 2345) throw null;
 
 			// ----
 

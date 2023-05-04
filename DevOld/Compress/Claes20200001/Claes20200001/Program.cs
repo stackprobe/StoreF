@@ -106,7 +106,7 @@ namespace Charlotte
 				throw new Exception("入力フォルダが見つかりません。");
 
 			using (FileStream fileWriter = new FileStream(wFile, FileMode.Create, FileAccess.Write))
-			using (GZipStream gz = new GZipStream(fileWriter, CompressionMode.Compress))
+			using (GZipStream gz = new GZipStream(fileWriter, CompressionMode.Compress)) // HACK: 第3引数にtrueが要る -- 顕在化しないBug @ 2023.5.4
 			{
 				this.Writer = gz;
 
@@ -192,7 +192,7 @@ namespace Charlotte
 			SCommon.CreateDir(wDir);
 
 			using (FileStream fileReader = new FileStream(rFile, FileMode.Open, FileAccess.Read))
-			using (GZipStream gz = new GZipStream(fileReader, CompressionMode.Decompress))
+			using (GZipStream gz = new GZipStream(fileReader, CompressionMode.Decompress)) // HACK: 第3引数にtrueが要る -- 顕在化しないBug @ 2023.5.4
 			{
 				this.Reader = gz;
 

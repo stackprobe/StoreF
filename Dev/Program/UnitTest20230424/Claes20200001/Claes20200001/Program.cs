@@ -65,7 +65,7 @@ namespace Charlotte
 			//new Test0003().Test03(); // RandomUnit
 			//new Test0003().Test04(); // RandomUnit
 			//new Test0003().Test05(); // RandomUnit
-			//new Test0004().Test01(); // SCommon.Serializer
+			new Test0004().Test01(); // SCommon.Serializer
 			//new Test0005().Test01(); // SCommon.Hex
 			//new Test0005().Test02(); // SCommon.Hex
 			//new Test0006().Test01(); // SCommon.TimeStampToSec
@@ -82,7 +82,7 @@ namespace Charlotte
 			//new Test0010().Test02(); // SCommon.Tokenize
 			//new Test0010().Test03(); // SCommon.Tokenize
 			//new Test0010().Test04(); // SCommon.Tokenize
-			new Test0011().Test01(); // SCommon.Generate
+			//new Test0011().Test01(); // SCommon.Generate
 
 			// --
 		}
