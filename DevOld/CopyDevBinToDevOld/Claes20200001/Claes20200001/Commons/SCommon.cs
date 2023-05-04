@@ -315,6 +315,16 @@ namespace Charlotte.Commons
 				int stAn = 0;
 				int edAn = 0;
 
+				// str(gz&Base64)の先頭部の想定：
+				// -- ID(1f8b) + CM=DEFLATE(08) ==> H4sI
+				// -- + FLG(00) + TIME-STAMP-1(0000) ==> AAAA
+				// -- + TIME-STAMP-2(0000) + XFL(04) ==> AAAE
+				//                               ~~
+				//                               Javaでやると00になる。
+				//                               04 = compressor used fastest algorithm
+				// gz仕様：
+				// -- https://www.ietf.org/rfc/rfc1952.txt
+
 				if (str.StartsWith("H4sIA")) // 先頭を圧縮
 				{
 					for (stAn = 1; stAn < 9; stAn++)
@@ -338,6 +348,9 @@ namespace Charlotte.Commons
 					}
 					str = str.Substring(0, str.Length - edAn);
 				}
+
+				if (stAn == 0)
+					ProcMain.WriteLog("SCommon.Serializer.Encode.stAn=0"); // strの先頭部が想定と違う。-- データ的に問題無いがこの処理は無駄になる。
 
 				return stAn + str + edAn;
 			}
@@ -452,18 +465,38 @@ namespace Charlotte.Commons
 		}
 
 		/// <summary>
-		/// 列挙の列挙(2次元列挙)を列挙(1次元列挙)に変換する。
+		/// 列挙の列挙(2次元配列)を列挙(1次元配列)に変換する。
 		/// 例：{{ A, B, C }, { D, E, F }, { G, H, I }} -> { A, B, C, D, E, F, G, H, I }
-		/// 但し Concat(new X[] { AAA, BBB, CCC }) は AAA.Concat(BBB).Concat(CCC) と同じ。
+		/// 尚 Concat(new T[][] { AAA, BBB, CCC }) は AAA.Concat(BBB).Concat(CCC) と同じ。
 		/// </summary>
 		/// <typeparam name="T">要素の型</typeparam>
-		/// <param name="src">列挙の列挙(2次元列挙)</param>
-		/// <returns>列挙(1次元列挙)</returns>
+		/// <param name="src">列挙の列挙(2次元配列)</param>
+		/// <returns>列挙(1次元配列)</returns>
 		public static IEnumerable<T> Concat<T>(IEnumerable<IEnumerable<T>> src)
 		{
 			foreach (IEnumerable<T> part in src)
 				foreach (T element in part)
 					yield return element;
+		}
+
+		/// <summary>
+		/// 生成器をくり返し実行して要素を列挙する。
+		/// Java の Stream.generate(generator).limit(count) と同じ。
+		/// 例：Generate(3, generator); -> { generator(), generator(), generator() }
+		/// 要素の個数に -1 を指定すると無限に要素を列挙する。
+		/// この場合は Java の Stream.generate(generator) と同じ。
+		/// 例：Generate(-1, generator); -> { generator(), generator(), generator(), ... }
+		/// </summary>
+		/// <typeparam name="T">要素の型</typeparam>
+		/// <param name="count">要素の個数(0～), -1 == 無限</param>
+		/// <param name="generator">要素の生成器</param>
+		/// <returns>列挙</returns>
+		public static IEnumerable<T> Generate<T>(int count, Func<T> generator)
+		{
+			while (count == -1 || 0 <= --count)
+			{
+				yield return generator();
+			}
 		}
 
 		/// <summary>
@@ -2038,7 +2071,7 @@ namespace Charlotte.Commons
 
 		public static void Compress(Stream reader, Stream writer)
 		{
-			using (GZipStream gz = new GZipStream(writer, CompressionMode.Compress)) // BUG: 第3引数にtrueが要る -- 現時点では顕在化しない想定 @ 2023.5.4
+			using (GZipStream gz = new GZipStream(writer, CompressionMode.Compress, true))
 			{
 				reader.CopyTo(gz);
 			}
@@ -2046,7 +2079,7 @@ namespace Charlotte.Commons
 
 		public static void Decompress(Stream reader, Stream writer, long limit = -1L)
 		{
-			using (GZipStream gz = new GZipStream(reader, CompressionMode.Decompress)) // BUG: 第3引数にtrueが要る -- 現時点では顕在化しない想定 @ 2023.5.4
+			using (GZipStream gz = new GZipStream(reader, CompressionMode.Decompress, true))
 			{
 				if (limit == -1L)
 				{
@@ -2215,7 +2248,7 @@ namespace Charlotte.Commons
 					data = SCommon.Join(new byte[][]
 					{
 						data,
-						Enumerable.Range(0, 5 - data.Length % 5).Select(dummy => (byte)0).ToArray(),
+						Enumerable.Repeat((byte)0, 5 - data.Length % 5).ToArray(),
 					});
 
 					str = EncodeEven(data);

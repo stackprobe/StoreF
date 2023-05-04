@@ -170,7 +170,7 @@ namespace Charlotte
 			}
 
 			using (FileStream fileWriter = new FileStream(wFile, FileMode.Create, FileAccess.Write))
-			using (GZipStream writer = new GZipStream(fileWriter, CompressionMode.Compress)) // BUG: 第3引数にtrueが要る -- 現時点では顕在化しない想定 @ 2023.5.4
+			using (GZipStream writer = new GZipStream(fileWriter, CompressionMode.Compress, true))
 			{
 				P_Writer = writer;
 				root.Write_DFs();
