@@ -2038,7 +2038,7 @@ namespace Charlotte.Commons
 
 		public static void Compress(Stream reader, Stream writer)
 		{
-			using (GZipStream gz = new GZipStream(writer, CompressionMode.Compress)) // HACK: 第3引数にtrueが要る -- 顕在化しないBug @ 2023.5.4
+			using (GZipStream gz = new GZipStream(writer, CompressionMode.Compress)) // BUG: 第3引数にtrueが要る -- 顕在化しないBug @ 2023.5.4
 			{
 				reader.CopyTo(gz);
 			}
@@ -2046,7 +2046,7 @@ namespace Charlotte.Commons
 
 		public static void Decompress(Stream reader, Stream writer, long limit = -1L)
 		{
-			using (GZipStream gz = new GZipStream(reader, CompressionMode.Decompress)) // HACK: 第3引数にtrueが要る -- 顕在化しないBug @ 2023.5.4
+			using (GZipStream gz = new GZipStream(reader, CompressionMode.Decompress)) // BUG: 第3引数にtrueが要る -- 顕在化しないBug @ 2023.5.4
 			{
 				if (limit == -1L)
 				{
